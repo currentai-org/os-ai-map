@@ -1,11 +1,21 @@
 """The release tool's two rules: history is staged forwards-only or not at all, and a commit
 releases exactly the candidate that was reviewed. Offline; the platform is a fake."""
 
+import json
+
 from build import release_dataset as R
 
 
-def _revision(rid, kind="FULL", number=1, **options):
-    return {"id": rid, "revisionNumber": number, "kind": kind, "kindOptions": options or None}
+STORED = (("repo", "VARCHAR"), ("observed_date", "DATE"), ("stars", "BIGINT"))
+
+
+def _columns(pairs):
+    return None if pairs is None else [{"name": name, "type": kind} for name, kind in pairs]
+
+
+def _revision(rid, kind="FULL", number=1, stored=STORED, **options):
+    return {"id": rid, "revisionNumber": number, "kind": kind, "kindOptions": options or None,
+            "storageSchema": _columns(stored)}
 
 
 def _model(name, latest, released=None, enabled=True):
@@ -16,11 +26,19 @@ def _model(name, latest, released=None, enabled=True):
 HISTORY = dict(kind="INCREMENTAL_BY_UNIQUE_KEY", uniqueKeyColumns=["repo", "observed_date"])
 
 
-def _candidate(cid="c1", status="OPEN", check="SUCCESS", blockers=(), revisions=(("a", "r2", "AUTHOR"),)):
+def _candidate(cid="c1", status="OPEN", check="SUCCESS", blockers=(), revisions=(("a", "r2", "AUTHOR"),),
+               check_id="k1", base="rel-0", classifications=(), model_classification=None,
+               schema=(("id", "VARCHAR"),), stored=STORED):
     return {"id": cid, "status": status, "description": "d", "createdAt": "2026-11-21T20:10:00Z",
-            "commitBlockers": list(blockers), "latestCheck": {"status": check} if check else None,
+            "commitBlockers": list(blockers), "baseRelease": {"id": base} if base else None,
+            "latestCheck": {"id": check_id, "status": check} if check else None,
             "revisions": [{"source": source, "dataModel": {"id": f"m-{name}", "name": name},
-                           "revision": {"id": rid, "revisionNumber": 2}} for name, rid, source in revisions]}
+                           "revision": {"id": rid, "revisionNumber": 2},
+                           "schema": _columns(schema), "storageSchema": _columns(stored),
+                           "modelClassification": model_classification,
+                           "columnClassifications": [{"columnName": c, "classification": k, "source": src}
+                                                     for c, k, src in classifications]}
+                          for name, rid, source in revisions]}
 
 
 # --- history is released forwards-only -------------------------------------------------------------
@@ -116,6 +134,133 @@ def test_the_digest_follows_what_the_candidate_releases_and_not_its_order():
     assert R.candidate_digest(one) == R.candidate_digest(same) != R.candidate_digest(other)
 
 
+def test_the_digest_covers_every_release_decision_the_platform_reports():
+    """Same models at the same revisions is not the same release: the `scores` repair turned on
+    the BREAKING classification of its removed columns."""
+    reviewed = R.candidate_digest(_candidate())
+    changed = [
+        _candidate(classifications=(("old_col", "BREAKING", "AUTHOR"),)),
+        _candidate(model_classification="BREAKING"),
+        _candidate(schema=(("id", "BIGINT"),)),
+        _candidate(schema=None),
+        _candidate(base="rel-9"),
+        _candidate(stored=STORED[:2]),
+        _candidate(check_id="k2"),
+        _candidate(revisions=(("a", "r2", "AUTO"),)),
+    ]
+    digests = {R.candidate_digest(c) for c in changed}
+    assert reviewed not in digests and len(digests) == len(changed)
+    author = _candidate(classifications=(("c", "ADDITIVE", "AUTHOR"),))
+    auto = _candidate(classifications=(("c", "ADDITIVE", "AUTO"),))
+    assert R.candidate_digest(author) != R.candidate_digest(auto)
+
+
+def test_the_digest_does_not_claim_forwards_only():
+    assert "forwardsOnly" not in json.dumps(R.reviewed_content(_candidate()))
+
+
+def test_a_classification_changed_after_review_does_not_commit():
+    reviewed = R.candidate_digest(_candidate(classifications=(("old_col", "BREAKING", "AUTHOR"),)))
+    (problem,) = R.commit_problems(_candidate(), "c1", reviewed)
+    assert "now releases something else" in problem
+
+
+# --- a stored column removed or retyped rebuilds the table, and the platform does not refuse it ------
+
+
+def _history_models():
+    return [_model("h", _revision("r2", number=2, **HISTORY), released=_revision("r1", **HISTORY)),
+            _model("a", _revision("r2"), released=_revision("r1"))]
+
+
+def test_a_history_model_that_keeps_and_adds_columns_is_fine():
+    candidate = _candidate(revisions=(("h", "r2", "AUTHOR"),), stored=STORED + (("forks", "BIGINT"),))
+    assert R.history_schema_problems(candidate, _history_models()) == []
+    renamed_case = _candidate(revisions=(("h", "r2", "AUTHOR"),), stored=(("REPO", "VARCHAR"),) + STORED[1:])
+    assert R.history_schema_problems(renamed_case, _history_models()) == []
+
+
+def test_a_removed_stored_column_is_a_history_rebuild():
+    candidate = _candidate(revisions=(("h", "r2", "AUTHOR"),), stored=STORED[:2])
+    (problem,) = R.history_schema_problems(candidate, _history_models())
+    assert "would rebuild it from its start" in problem and "removes stars" in problem
+
+
+def test_a_retyped_stored_column_is_a_history_rebuild():
+    candidate = _candidate(revisions=(("h", "r2", "AUTHOR"),), stored=STORED[:2] + (("stars", "VARCHAR"),))
+    (problem,) = R.history_schema_problems(candidate, _history_models())
+    assert "retypes stars BIGINT -> VARCHAR" in problem
+
+
+def test_an_unresolved_schema_cannot_show_the_columns_are_kept():
+    candidate = _candidate(revisions=(("h", "r2", "AUTHOR"),), stored=None)
+    assert "staged schema is not resolved" in R.history_schema_problems(candidate, _history_models())[0]
+
+
+def test_a_recomputed_model_may_drop_a_column():
+    candidate = _candidate(revisions=(("a", "r2", "AUTHOR"),), stored=STORED[:1])
+    assert R.history_schema_problems(candidate, _history_models()) == []
+
+
+def test_a_candidate_that_rebuilds_history_gets_no_commit_command_and_is_not_committed(capsys, tmp_path):
+    models = _history_models()
+    pending = _candidate(revisions=(("h", "r2", "AUTHOR"),), stored=STORED[:2])
+    platform = FakePlatform(models, pending)
+    assert R.main(["stage", "obs", "--model", "h", "--records-dir", str(tmp_path)], platform=platform) == 1
+    out = capsys.readouterr().out
+    assert "removes stars" in out and "to commit exactly this" not in out
+    record = tmp_path / "obs.c1.json"
+    assert R.main(["commit", "obs", "--candidate", "c1", "--digest", R.candidate_digest(pending),
+                   "--stage-record", str(record)], platform=platform) == 2
+    assert [field for field, _payload in platform.mutations] == ["stageDatasetRelease"]
+    assert R.main(["status", "obs"], platform=platform) == 0
+    assert "not committable with this tool" in capsys.readouterr().out
+
+
+# --- forwards-only cannot be read back, so a history release needs the stage record ------------------
+
+
+def _history_setup():
+    models = [_model("h", _revision("r2", number=2, **HISTORY), released=_revision("r1", **HISTORY)),
+              _model("a", _revision("r2"), released=_revision("r1"))]
+    candidate = _candidate(revisions=(("a", "r2", "AUTHOR"), ("h", "r2", "AUTHOR")))
+    payload = {"datasetId": "ds-1", "revisions": [
+        {"dataModelId": "m-a", "dataModelRevisionId": "r2"},
+        {"dataModelId": "m-h", "dataModelRevisionId": "r2", "forwardsOnly": True, "forwardsOnlyDefaults": []}]}
+    return models, candidate, payload
+
+
+def test_a_candidate_without_history_models_needs_no_record():
+    models, _candidate_, _payload = _history_setup()
+    assert R.record_problems(None, _candidate(), models) == []
+
+
+def test_a_history_release_is_not_committed_without_its_stage_record():
+    models, candidate, _payload = _history_setup()
+    (problem,) = R.record_problems(None, candidate, models)
+    assert "h, which keep history" in problem and "--stage-record" in problem
+
+
+def test_the_record_of_the_stage_that_was_checked_is_accepted():
+    models, candidate, payload = _history_setup()
+    assert R.record_problems(R.stage_record("obs", candidate, payload), candidate, models) == []
+
+
+def test_a_record_from_an_earlier_stage_or_another_candidate_is_refused():
+    models, candidate, payload = _history_setup()
+    record = R.stage_record("obs", candidate, payload)
+    restaged = dict(candidate, latestCheck={"id": "k2", "status": "SUCCESS"})
+    assert "staged or checked again" in R.record_problems(record, restaged, models)[0]
+    assert "not c2" in R.record_problems(record, dict(candidate, id="c2"), models)[0]
+
+
+def test_a_record_that_did_not_send_forwards_only_is_refused():
+    models, candidate, payload = _history_setup()
+    payload["revisions"][1].pop("forwardsOnly")
+    (problem,) = R.record_problems(R.stage_record("obs", candidate, payload), candidate, models)
+    assert problem.startswith("h: keeps history")
+
+
 def test_the_reviewed_candidate_commits():
     pending = _candidate()
     assert R.commit_problems(pending, "c1", R.candidate_digest(pending)) == []
@@ -134,7 +279,8 @@ def test_another_candidate_a_failed_check_and_a_blocker_each_stop_a_commit():
     assert "not the reviewed c0" in R.commit_problems(pending, "c0", digest)[0]
     assert R.commit_problems(None, "c1", digest) == ["the dataset has no release candidate"]
     assert "is FAILED, not SUCCESS" in R.commit_problems(_candidate(check="FAILED"), "c1", digest)[0]
-    assert "not run" in R.commit_problems(_candidate(check=None), "c1", digest)[0]
+    unchecked = _candidate(check=None)
+    assert any("not run" in problem for problem in R.commit_problems(unchecked, "c1", R.candidate_digest(unchecked)))
     assert "CHECK_OUT_OF_DATE" in R.commit_problems(_candidate(blockers=["CHECK_OUT_OF_DATE"]), "c1", digest)[0]
     closed = R.commit_problems(_candidate(status="COMMITTED", blockers=["NOT_OPEN"]), "c1", digest)
     assert "is COMMITTED, not OPEN" in closed[0]
@@ -161,16 +307,27 @@ class FakePlatform:
         return {"success": True, "release": {"id": "rel-1"}}
 
 
-def test_stage_sends_forwards_only_and_prints_the_commit_command(capsys):
+def test_stage_sends_forwards_only_writes_its_record_and_the_commit_needs_it(capsys, tmp_path):
     models = [_model("h", _revision("r2", number=2, **HISTORY), released=_revision("r1", **HISTORY))]
     pending = _candidate(revisions=(("h", "r2", "AUTHOR"),))
     platform = FakePlatform(models, pending)
-    assert R.main(["stage", "obs", "--model", "h", "--description", "add nothing"], platform=platform) == 0
+    assert R.main(["stage", "obs", "--model", "h", "--description", "add nothing",
+                   "--records-dir", str(tmp_path)], platform=platform) == 0
     ((field, payload),) = platform.mutations
     assert field == "stageDatasetRelease" and payload["revisions"][0]["forwardsOnly"] is True
     out = capsys.readouterr().out
-    assert "forwards-only: h" in out
-    assert f"commit obs --candidate c1 --digest {R.candidate_digest(pending)}" in out
+    record_path = tmp_path / "obs.c1.json"
+    assert "forwards-only: h" in out and "keeps history" in out
+    assert f"commit obs --candidate c1 --digest {R.candidate_digest(pending)} --stage-record {record_path}" in out
+    record = json.loads(record_path.read_text())
+    assert record["check_id"] == "k1" and record["payload"] == payload
+
+    # The commit needs that record, and takes it.
+    assert R.main(["commit", "obs", "--candidate", "c1", "--digest", R.candidate_digest(pending)], platform=platform) == 2
+    assert len(platform.mutations) == 1
+    assert R.main(["commit", "obs", "--candidate", "c1", "--digest", R.candidate_digest(pending),
+                   "--stage-record", str(record_path)], platform=platform) == 0
+    assert platform.mutations[-1] == ("commitDatasetRelease", {"candidateId": "c1"})
 
 
 def test_a_refused_stage_calls_nothing(capsys):
@@ -180,10 +337,10 @@ def test_a_refused_stage_calls_nothing(capsys):
     assert platform.mutations == [] and "would rebuild it from its start" in capsys.readouterr().err
 
 
-def test_a_stage_whose_check_fails_exits_nonzero():
+def test_a_stage_whose_check_fails_exits_nonzero(tmp_path):
     models = [_model("a", _revision("r2"), released=_revision("r1"))]
     platform = FakePlatform(models, _candidate(check="FAILED", blockers=["CHECK_FAILED"]))
-    assert R.main(["stage", "obs", "--model", "a"], platform=platform) == 1
+    assert R.main(["stage", "obs", "--model", "a", "--records-dir", str(tmp_path)], platform=platform) == 1
 
 
 def test_commit_releases_only_the_reviewed_candidate(capsys):

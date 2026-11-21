@@ -35,39 +35,77 @@ one-model `createDataModelRelease` is refused there (`dataset-release-required`)
    uv run python -m build.release_dataset stage scores --model openness_facts --model openness_computed
    ```
 
-   It prints the candidate: each model and revision, the check result, the commit blockers, a
-   digest of what the candidate releases, and the command that commits exactly that. Staging
-   releases nothing. `status <dataset>` prints the same without staging.
+   It prints the candidate: the release it is based on, each model with its revision, resolved
+   columns and classifications, the check result, the commit blockers, a digest, and the command
+   that commits exactly that. It also writes a **stage record** under `build/release-records/`
+   (git-ignored): the payload it sent and the check that ran on it. Staging releases nothing.
+   `status <dataset>` prints the candidate without staging.
 3. **Commit** — a maintainer reads the candidate and runs the printed command:
 
    ```bash
    uv run python -m build.release_dataset commit scores --candidate <id> --digest <sha256>
    ```
 
-   The commit is refused unless that candidate is still the dataset's pending one, still releases
-   the same revisions, passed its latest check and has no blocker. A release cannot be withdrawn,
-   so this step is run by a person on values they read, never by a schedule, and an agent commits
-   only the exact candidate a maintainer authorized (ruling R-2026-11-21-i). **This is the step
-   that gets forgotten.** A run without it executes the *previous* release, and the symptom is "my
-   change had no effect" and not an error.
+   The commit is refused unless that candidate is still the dataset's newest one, is open, has the
+   same digest, passed its latest check and has no blocker. A release cannot be withdrawn, so this
+   step is run by a person on values they read, never by a schedule, and an agent commits only the
+   exact candidate a maintainer authorized (ruling R-2026-11-21-i). **This is the step that gets
+   forgotten.** A run without it executes the *previous* release, and the symptom is "my change
+   had no effect" and not an error.
 4. **Run** — `createUserModelRunRequest` with the dataset ID.
 5. **Prove it** — read the output table back and, for the scoring chain, run
    `build/check_parity.py`.
 
-**History is released forwards-only** (ruling R-2026-11-08-s). A model whose released kind is not
-`FULL` or `VIEW` keeps rows that no later run can rebuild, because the sources behind a history
-table report only their current state. `stage` sends `forwardsOnly` for every such model and has
-no flag that turns it off. It refuses a revision that changes the model's kind, its unique key or
-its time column, since the platform can only apply those by rebuilding the table from its start,
-and the platform refuses a removed or retyped column for the same reason. A column the revision
-adds is declared with `--added-column MODEL.COLUMN[=VALUE]`, the value being what rows already
-stored take. An unchanged model is re-locked against its upstreams with `--refresh NAME`, which is
-refused for a model that keeps history.
+### What the digest covers
 
-Staging runs the whole dataset check inside the platform's API process. For `language_live` (35
-models) and `ai_ddos` (28), `stageDatasetRelease` returns `timeout exceeded when trying to
-connect` every time, while datasets of ten models or fewer stage. That is a platform limit to
-raise with the platform's maintainers, and retrying from here does not get past it.
+The digest is a SHA-256 over every release decision the platform reports for the candidate: the
+release it is based on; each model's revision, who staged it (`AUTHOR` or the check's own `AUTO`
+entries), its resolved output and storage schema, its model classification and every column
+classification with its source; and the id of its latest check. A classification matters as much
+as a revision: the `scores` migration release only passed once its removed columns were declared
+`BREAKING`. Staging again always queues a new check (observed on a scratch dataset: the same
+stage sent twice produced two check ids), so a candidate changed after it was reviewed has another
+digest, including when the change is one the platform does not report.
+
+The digest does **not** cover `forwardsOnly` or its defaults. The platform accepts them on a stage
+and reports them nowhere, so nobody can read them off a candidate. The stage record below is the
+evidence for those.
+
+### History is released forwards-only
+
+Ruling R-2026-11-08-s. A model whose released kind is not `FULL` or `VIEW` keeps rows that no
+later run can rebuild, because the sources behind a history table report only their current
+state. What enforces it, and where:
+
+| Rule | Enforced by | When |
+|---|---|---|
+| Every revision of a history model is sent with `forwardsOnly`; no flag turns it off | this tool | before staging |
+| A change of kind, unique key, time column or partition grain is refused | this tool | before staging |
+| `--refresh` of a history model is refused, since a re-lock cannot carry `forwardsOnly` | this tool | before staging |
+| A stored column the candidate removes or retypes is refused | this tool, comparing the released storage schema with the candidate's | after the check resolves the candidate: `stage` exits 1, `status` prints it, `commit` refuses |
+| A history model in the candidate was sent `forwardsOnly` by the stage that was checked | this tool, from the stage record | at commit: `--stage-record` is required and must name the candidate and its latest check |
+| An added column needs a declared default (`--added-column MODEL.COLUMN[=VALUE]`) | the platform's check | observed 2026-11-21 on a scratch dataset: the check failed without one and passed with one |
+
+Nothing in that table waits for the platform to refuse a rebuild. Its schema says `forwardsOnly`
+is rejected for a removed or retyped column, and on 2026-11-21, on a scratch dataset, it accepted
+`forwardsOnly` for a unique-key model's revision that removed a column, and the check passed with
+the column classified `BREAKING`. Whether the commit would have been rejected was not tested.
+The tool's tests run against a fake platform, so they establish what the tool refuses and nothing
+about the platform.
+
+A history release staged any other way (the MCP tool, the web interface) has no stage record, and
+this tool will not commit it.
+
+### Datasets the platform cannot stage
+
+For `language_live` (35 models) and `ai_ddos` (28), `stageDatasetRelease` returns `timeout
+exceeded when trying to connect` on every attempt, about 24 seconds in, while datasets of ten
+models or fewer stage. The likely cause, from reading the platform's code and not from its logs,
+is that staging runs the whole dataset check on the API's ten-connection pool with no bound on
+the per-model queries it runs at once. Retrying from here does not get past it. Do not work around
+it by staging part of the dataset: the first partial commit marks the whole dataset migrated while
+most of its models are still on unversioned releases. Both stay unmigrated until the platform
+bounds that concurrency, and are staged whole and re-tested then.
 
 `tools/deploy_udm.py` in `currentai-org/` wraps the revision, the one-model release and the run
 for the scoring chain. Its release step is the call a versioned organization refuses, so release

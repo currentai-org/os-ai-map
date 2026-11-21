@@ -5017,8 +5017,7 @@ rulings:
     ruling: >-
       Not yet. Build and validate history models in an isolated environment first. Approve
       production datasets and weekly schedules only after their schemas, costs, and recovery
-      procedures are reviewed. Delete the scratch dataset after verification; don't retain an
-      unmanaged production scratch dataset indefinitely.
+      procedures are reviewed.
     status: in-force
     executor: agent
     lands_in: []
@@ -5050,6 +5049,37 @@ rulings:
       Authorize narrowly. Commit only the exact reviewed candidate, after rechecking its live status
       and blockers. Do not grant general release permissions. Fix the deployment tooling to use the
       versioned release API and enforce the forwards-only ruling.
+    status: in-force
+    executor: agent
+    lands_in: [docs/operations/deploy-models.md]
+    applied_in: []
+
+  - id: R-2026-11-21-j
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: ["#918"]
+    question: >-
+      The automation_probe dataset holds the scratch models the platform tests ran on. Is it kept?
+    ruling: >-
+      Delete after verification. Keep it until any useful test fixtures are captured and nothing
+      depends on it, then delete it. Don't retain an unmanaged production scratch dataset
+      indefinitely.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-k
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: ["#918", language_live, ai_ddos]
+    question: >-
+      The platform cannot stage language_live or ai_ddos whole. May they be migrated in parts?
+    ruling: >-
+      No. Don't use partial migration as a workaround. Bound staging-check concurrency in the
+      platform rather than simply increasing the pool, and retest both datasets after the fix.
     status: in-force
     executor: agent
     lands_in: [docs/operations/deploy-models.md]

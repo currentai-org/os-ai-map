@@ -12,22 +12,45 @@ updates the dataset's one pending candidate, the platform checks it, and `commit
 `createDataModelRelease` is refused there, so the one-model release the older runbooks describe
 no longer exists.
 
-Two rules are enforced here, before any call that changes the platform.
+Two rules are applied here. Each says below which part this tool checks itself and which part
+it leaves to the platform.
 
 **History is released forwards-only** (ruling R-2026-11-08-s). A model whose released kind is not
 `FULL` or `VIEW` keeps rows that a later run adds to and cannot rebuild: the sources behind the
 history tables report only their current state. A release that recomputes such a model rebuilds
-it from its start and loses those rows for good. So every revision of one is staged with
-`forwardsOnly`, there is no flag that turns it off, and a change the platform can only apply by
-recomputing (a different kind, or a different row key or time column) is refused. A removed or
-retyped column is the third such change. An unreleased revision has no resolved schema to compare,
-so that one is refused by the platform when it receives `forwardsOnly`, and the refusal is printed.
+it from its start and loses those rows for good.
+
+- Checked here, before any call: every revision of such a model is staged with `forwardsOnly`,
+  and no flag turns that off. A revision that changes the model's kind, unique key, time column
+  or partition grain is refused. A re-lock (`--refresh`) of such a model is refused, because it
+  cannot carry `forwardsOnly`.
+- Checked here, once the platform has resolved the candidate: a stored column the candidate
+  removes or retypes. An unreleased revision has no schema to compare, so this cannot be seen
+  before staging. `stage` then exits nonzero, `status` prints it, and `commit` refuses the
+  candidate.
+- Not relied on: the platform. Its schema says `forwardsOnly` is rejected for a removed or retyped
+  column. On 2026-11-21, on a scratch dataset, it accepted `forwardsOnly` for a unique-key model's
+  revision that removed a column, and the check passed with the column classified `BREAKING`.
+  Whether the commit would have been rejected was not tested. So nothing here waits for a
+  platform refusal, and the tests, which run against a fake platform, establish only what this
+  tool does.
 
 **A commit names the candidate that was reviewed** (ruling R-2026-11-21-i). `status` and `stage`
-print the candidate's id and a digest of what it releases. `commit` takes both, reads the candidate
-again, and refuses unless it is still the dataset's pending candidate, still releases exactly those
-revisions, passed its latest check, and has no commit blocker. Staging after a review changes the
-digest, so a candidate cannot be swapped under an approval.
+print the candidate's id and a digest. `commit` takes both, reads the candidate again, and refuses
+unless it is still the dataset's newest candidate, is open, has the same digest, passed its latest
+check, and has no commit blocker.
+
+- The digest covers every release decision the platform lets a client read back: the release the
+  candidate is based on; each model's revision, who staged it, its resolved output schema, its
+  model classification and every column classification with its source; and the id of the latest
+  check. Staging again queues a new check, so a candidate changed after the review has another
+  digest even when what changed cannot be read.
+- The digest does not cover `forwardsOnly` or its defaults: the platform accepts them and does
+  not report them back, so a reviewer cannot read them off a candidate. For a candidate that
+  releases a model that keeps history, `commit` therefore also requires the **stage record** that
+  `stage` wrote: the payload it sent and the check that ran on it. The commit is refused unless the
+  record names this candidate and its latest check and shows `forwardsOnly` on every such model.
+  A candidate staged any other way cannot be shown to be forwards-only, and is not committed here.
 
 A release is the platform's record and cannot be withdrawn, which is why `commit` is a separate
 command that a person runs with values they read.
@@ -37,9 +60,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import os
 import sys
 import time
+
+from pathlib import Path
 
 from build.publish_registry import graphql
 
@@ -48,15 +74,20 @@ RECOMPUTED_KINDS = frozenset({"FULL", "VIEW"})
 # Kind options that decide which stored row a new row replaces. Changing one recomputes the model.
 ROW_KEY_OPTIONS = ("uniqueKeyColumns", "timeColumn", "partitionGrain")
 CHECK_DONE = frozenset({"SUCCESS", "FAILED", "CANCELED"})
+# Where `stage` writes what it sent. Git-ignored: a record is evidence for one commit, not source.
+RECORDS_DIR = Path(__file__).resolve().parent / "release-records"
 
 _REVISION = "id revisionNumber kind kindOptions{ uniqueKeyColumns timeColumn partitionGrain }"
 Q_DATASET = """query($where: JSON){ datasets(where:$where){ edges{ node{ id name } } } }"""
 # The API refuses a page larger than 100. A dataset past that is refused here, not read in part.
 Q_MODELS = """query($where: JSON){ dataModels(where:$where, first: 100){ pageInfo{ hasNextPage } edges{ node{
-  id name isEnabled latestRevision{ %s } latestRelease{ revision{ %s } } } } } }""" % (_REVISION, _REVISION)
+  id name isEnabled latestRevision{ %s } latestRelease{ revision{ %s storageSchema{ name type } } } } } } }""" % (
+    _REVISION, _REVISION)
 Q_CANDIDATE = """query($where: JSON){ datasets(where:$where){ edges{ node{ releaseCandidates(first: 1){ edges{ node{
-  id status description createdAt commitBlockers latestCheck{ status }
-  revisions{ source dataModel{ id name } revision{ id revisionNumber } } } } } } } } }"""
+  id status description createdAt commitBlockers latestCheckOutOfDate baseRelease{ id } latestCheck{ id status }
+  revisions{ source dataModel{ id name } revision{ id revisionNumber } schema{ name type }
+    storageSchema{ name type }
+    modelClassification columnClassifications{ columnName classification source } } } } } } } } }"""
 M_STAGE = """mutation($input: StageDatasetReleaseInput!){ stageDatasetRelease(input:$input){
   success message candidate{ id } } }"""
 M_COMMIT = """mutation($input: CommitDatasetReleaseInput!){ commitDatasetRelease(input:$input){
@@ -158,13 +189,118 @@ def refresh_ids(models: list[dict], names: list[str]) -> tuple[list[str], list[s
     return ([] if problems else ids), problems
 
 
+def reviewed_content(candidate: dict) -> dict:
+    """Every release decision the platform reports for a candidate, in a canonical order.
+
+    `forwardsOnly` and its defaults are absent because the platform does not report them; see the
+    module docstring for how a commit covers them.
+    """
+    revisions = []
+    for entry in sorted(candidate["revisions"], key=lambda e: (e["dataModel"]["name"], e["source"])):
+        schema = entry.get("schema")
+        revisions.append({
+            "model": entry["dataModel"]["name"],
+            "revision": entry["revision"]["id"],
+            "source": entry["source"],
+            "schema": None if schema is None else [[column["name"], column["type"]] for column in schema],
+            "storage_schema": None if entry.get("storageSchema") is None else [
+                [column["name"], column["type"]] for column in entry["storageSchema"]],
+            "model_classification": entry.get("modelClassification"),
+            "column_classifications": sorted(
+                [c["columnName"], c["classification"], c["source"]] for c in entry.get("columnClassifications") or []
+            ),
+        })
+    return {
+        "base_release": (candidate.get("baseRelease") or {}).get("id"),
+        "check": (candidate.get("latestCheck") or {}).get("id"),
+        "revisions": revisions,
+    }
+
+
 def candidate_digest(candidate: dict) -> str:
-    """SHA-256 over what the candidate releases: each model, its revision, and who staged it."""
-    lines = sorted(
-        f"{entry['dataModel']['name']}\t{entry['revision']['id']}\t{entry['source']}"
-        for entry in candidate["revisions"]
-    )
-    return hashlib.sha256("\n".join(lines).encode()).hexdigest()
+    """SHA-256 over `reviewed_content`: what the candidate releases and the check that ran on it."""
+    canonical = json.dumps(reviewed_content(candidate), sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode()).hexdigest()
+
+
+def history_models_in(candidate: dict, models: list[dict]) -> list[str]:
+    """Names of the models the candidate releases that keep history, sorted."""
+    keeping = {model["id"] for model in models if keeps_history(model)}
+    return sorted({entry["dataModel"]["name"] for entry in candidate["revisions"]
+                   if entry["dataModel"]["id"] in keeping})
+
+
+def history_schema_problems(candidate: dict, models: list[dict]) -> list[str]:
+    """Why a candidate would rebuild a history model's table: a stored column removed or retyped.
+
+    Compares, for each model in the candidate that keeps history, the columns its released
+    revision stores with the columns the candidate resolved for it. The platform accepts
+    `forwardsOnly` for such a revision and passes its check, so this comparison is the refusal.
+    A schema that was not resolved on either side is a problem too: the columns cannot be shown
+    to be kept.
+    """
+    by_id = {model["id"]: model for model in models}
+    problems = []
+    for entry in sorted(candidate["revisions"], key=lambda e: e["dataModel"]["name"]):
+        model = by_id.get(entry["dataModel"]["id"])
+        if model is None or not keeps_history(model):
+            continue
+        name = entry["dataModel"]["name"]
+        released = model["latestRelease"]["revision"].get("storageSchema")
+        staged = entry.get("storageSchema")
+        if not released or not staged:
+            side = "released" if not released else "staged"
+            problems.append(f"{name}: keeps history, and its {side} schema is not resolved, so its stored "
+                            "columns cannot be shown to be kept")
+            continue
+        now = {column["name"].lower(): column["type"] for column in staged}
+        removed = [c["name"] for c in released if c["name"].lower() not in now]
+        retyped = [f"{c['name']} {c['type']} -> {now[c['name'].lower()]}" for c in released
+                   if c["name"].lower() in now and now[c["name"].lower()] != c["type"]]
+        if removed or retyped:
+            parts = ([f"removes {', '.join(removed)}"] if removed else []) + (
+                [f"retypes {', '.join(retyped)}"] if retyped else [])
+            problems.append(f"{name}: keeps history, and this release would rebuild it from its start: "
+                            + "; ".join(parts))
+    return problems
+
+
+def record_problems(record: dict | None, candidate: dict, models: list[dict]) -> list[str]:
+    """Why the stage record does not show this candidate's history models went forwards-only.
+
+    Empty when the candidate releases no model that keeps history, or when the record names this
+    candidate and its latest check and carries `forwardsOnly` for each such model.
+    """
+    names = history_models_in(candidate, models)
+    if not names:
+        return []
+    if record is None:
+        return [f"the candidate releases {', '.join(names)}, which keep history, and forwardsOnly cannot be read "
+                "back from the platform; pass the --stage-record that `stage` wrote for it"]
+    problems = []
+    if record.get("candidate_id") != candidate["id"]:
+        problems.append(f"the stage record is for candidate {record.get('candidate_id')}, not {candidate['id']}")
+    check = (candidate.get("latestCheck") or {}).get("id")
+    if record.get("check_id") != check:
+        problems.append(f"the stage record's check is {record.get('check_id')} and the candidate's latest is {check}: "
+                        "it was staged or checked again after the record was written")
+    sent = {entry["dataModelId"]: entry for entry in (record.get("payload") or {}).get("revisions") or []}
+    ids = {model["name"]: model["id"] for model in models}
+    for name in names:
+        if not (sent.get(ids[name]) or {}).get("forwardsOnly"):
+            problems.append(f"{name}: keeps history, and the stage record does not show it sent forwardsOnly")
+    return problems
+
+
+def stage_record(dataset: str, candidate: dict, payload: dict) -> dict:
+    """What `stage` sent and the check that ran on it, as written beside the candidate's digest."""
+    return {
+        "dataset": dataset,
+        "candidate_id": candidate["id"],
+        "check_id": (candidate.get("latestCheck") or {}).get("id"),
+        "digest": candidate_digest(candidate),
+        "payload": payload,
+    }
 
 
 def commit_problems(pending: dict | None, candidate_id: str, digest: str) -> list[str]:
@@ -190,24 +326,46 @@ def commit_problems(pending: dict | None, candidate_id: str, digest: str) -> lis
     return problems
 
 
-def render(dataset: str, candidate: dict | None) -> str:
-    """The candidate as a person reviews it, ending with the command that commits exactly it."""
+def render(dataset: str, candidate: dict | None, history: list[str] = (), record_path: Path | None = None,
+           rebuilds: list[str] = ()) -> str:
+    """The candidate as a person reviews it, ending with the command that commits exactly it.
+
+    `history` names the models in it that keep history. Their forwards-only setting is not
+    something the platform reports, so the line for each says where the evidence is. `rebuilds`
+    are the reasons the candidate would rebuild a history table; with any, no commit command is
+    printed.
+    """
     if candidate is None:
         return f"{dataset}: no release candidate"
-    check = (candidate.get("latestCheck") or {}).get("status") or "not run"
+    check = candidate.get("latestCheck") or {}
     lines = [
         f"{dataset}: candidate {candidate['id']} is {candidate['status']}, staged {candidate['createdAt'][:16]}",
-        f"  check: {check}    commit blockers: {', '.join(candidate['commitBlockers']) or 'none'}",
+        f"  based on release: {(candidate.get('baseRelease') or {}).get('id') or '(none, first release)'}",
+        f"  check: {check.get('status') or 'not run'} ({check.get('id') or 'no id'})    "
+        f"commit blockers: {', '.join(candidate['commitBlockers']) or 'none'}",
         f"  description: {candidate.get('description') or '(none)'}",
     ]
     for entry in sorted(candidate["revisions"], key=lambda e: e["dataModel"]["name"]):
-        lines.append(f"  {entry['dataModel']['name']:<40} revision {entry['revision']['revisionNumber']:<4} "
-                     f"{entry['source']}")
+        name = entry["dataModel"]["name"]
+        schema = entry.get("schema")
+        columns = "schema unresolved" if schema is None else f"{len(schema)} column(s)"
+        lines.append(f"  {name:<40} revision {entry['revision']['revisionNumber']:<4} {entry['source']:<6} {columns}")
+        if entry.get("modelClassification"):
+            lines.append(f"      model classified {entry['modelClassification']}")
+        for c in sorted(entry.get("columnClassifications") or [], key=lambda c: c["columnName"]):
+            lines.append(f"      column {c['columnName']}: {c['classification']} ({c['source']})")
+        if name in history:
+            lines.append("      keeps history: forwards-only is not reported by the platform; the stage record is the evidence")
     digest = candidate_digest(candidate)
     lines.append(f"  digest: {digest}")
-    if candidate["status"] == "OPEN":
+    for problem in rebuilds:
+        lines.append(f"  ! {problem}")
+    if rebuilds:
+        lines.append("  not committable with this tool: stage a revision that keeps those columns")
+    elif candidate["status"] == "OPEN":
+        record = f" --stage-record {record_path or '<the record stage wrote>'}" if history else ""
         lines.append(f"  to commit exactly this: uv run python -m build.release_dataset commit {dataset} "
-                     f"--candidate {candidate['id']} --digest {digest}")
+                     f"--candidate {candidate['id']} --digest {digest}{record}")
     return "\n".join(lines)
 
 
@@ -284,6 +442,9 @@ def main(argv: list[str] | None = None, platform=None) -> int:
     stage.add_argument("--no-wait", action="store_true", help="return once staged, without waiting for the check")
     commit.add_argument("--candidate", required=True, help="the candidate id that was reviewed")
     commit.add_argument("--digest", required=True, help="the digest printed with it")
+    commit.add_argument("--stage-record", type=Path, metavar="PATH",
+                        help="the record `stage` wrote; required when the candidate releases a model that keeps history")
+    stage.add_argument("--records-dir", type=Path, default=RECORDS_DIR, help="where the stage record is written")
     args = parser.parse_args(argv)
 
     if platform is None:
@@ -295,7 +456,13 @@ def main(argv: list[str] | None = None, platform=None) -> int:
     dataset_id = platform.dataset_id(args.dataset)
 
     if args.command == "status":
-        print(render(args.dataset, platform.candidate(dataset_id)))
+        candidate = platform.candidate(dataset_id)
+        if candidate is None:
+            print(render(args.dataset, None))
+            return 0
+        models = platform.models(dataset_id)
+        print(render(args.dataset, candidate, history_models_in(candidate, models),
+                     rebuilds=history_schema_problems(candidate, models)))
         return 0
 
     if args.command == "stage":
@@ -322,11 +489,29 @@ def main(argv: list[str] | None = None, platform=None) -> int:
                 print(f"  forwards-only: {next(m['name'] for m in models if m['id'] == entry['dataModelId'])}")
         platform.mutate(M_STAGE, "stageDatasetRelease", payload)
         candidate = platform.candidate(dataset_id) if args.no_wait else wait_for_check(platform, dataset_id)
-        print(render(args.dataset, candidate))
-        check = ((candidate or {}).get("latestCheck") or {}).get("status")
+        if candidate is None:
+            print("staged, and the platform reports no candidate", file=sys.stderr)
+            return 1
+        args.records_dir.mkdir(parents=True, exist_ok=True)
+        record_path = args.records_dir / f"{args.dataset}.{candidate['id']}.json"
+        record_path.write_text(json.dumps(stage_record(args.dataset, candidate, payload), indent=2) + "\n")
+        rebuilds = history_schema_problems(candidate, models)
+        print(render(args.dataset, candidate, history_models_in(candidate, models), record_path, rebuilds))
+        print(f"  stage record: {record_path}")
+        check = (candidate.get("latestCheck") or {}).get("status")
+        if rebuilds:
+            return 1
+        if args.no_wait:
+            print("  the check has not finished: run status for the digest to review, and stage again without "
+                  "--no-wait if a model keeps history, since the record must name the finished check")
         return 0 if args.no_wait or check == "SUCCESS" else 1
 
-    problems = commit_problems(platform.candidate(dataset_id), args.candidate, args.digest)
+    pending = platform.candidate(dataset_id)
+    problems = commit_problems(pending, args.candidate, args.digest)
+    if not problems:
+        models = platform.models(dataset_id)
+        record = json.loads(args.stage_record.read_text()) if args.stage_record else None
+        problems = history_schema_problems(pending, models) + record_problems(record, pending, models)
     if problems:
         print("not committed:", file=sys.stderr)
         for problem in problems:
