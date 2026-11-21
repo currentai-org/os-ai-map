@@ -32,20 +32,38 @@ every product, fact, and rule-walk row, the current `declaration_version_id` and
 and every result disposition. A truncated subset or a fabricated/stale identity is rejected here,
 and there is no second evaluation that could drift from the builder.
 
+## Each publish appends one generation
+
+A generation is the rows carrying one `declaration_version_id`. A publish APPENDS its generation to
+the three tables, so they hold the trace of every commit it was published from and the agreement
+can be read across releases (`build/trace_generations.py` reports it; ruling R-2026-11-08-t). A
+reader that wants one evaluation selects a `declaration_version_id`; nothing here marks one as
+current.
+
+Appending the same file twice would double its rows, so before any upload the publisher reads which
+generations each table already holds. A table that holds this generation at the candidate's row
+count is skipped, which makes a re-run and a publish resumed after a failure safe. A table that
+holds it at any other row count stops the publish: that is a partial or foreign load, and appending
+to it would break the table's grain.
+
+`--replace` is the other write: it overwrites all three tables with the candidate and DISCARDS
+every generation they hold. `--rollback` restores archived bytes that way, so it requires
+`--replace` to be passed with it.
+
 ## No writes before the dry-run returns; rollback is by BYTES
 
 Like the evaluation publisher: `--plan` (offline) and `--dry-run` (read-only id resolution) validate
 and print the plan and perform NO mutation and NO local write. A real publish uploads, requests one
 run per model with `{datasetId, staticModelId}` and awaits each run group to terminal `SUCCESS`
 (polling the exact group the mutation returned), verifies the deployed row count and column schema
-via `pyoso`, and only then records the occurrence. The bytes are persisted BEFORE the platform
+of the generation it wrote via `pyoso`, and only then records the occurrence. The bytes are persisted BEFORE the platform
 mutation, content-addressed by `artifact_id` (SHA-256 over the file manifest) under
 `<archive-root>/artifacts/<artifact_id>/` (default `--archive-root`
 `build/evaluation/scoring-trace-deployments/`, separate from the evaluation publisher's
 `deployments/` so neither reads the other's archives); the append-only occurrence log — not
-directory mtimes — decides what is live. The operation is EXPLICIT: a normal publish is a `deploy`;
-`--rollback <artifact_id>` re-uploads an already-archived artifact after verifying its recorded
-hashes. The archive root is independent of `--dir`, so publishing from an archive never nests. The
+directory mtimes — records what was last published. The operation is EXPLICIT: a normal publish is
+a `deploy`; `--rollback <artifact_id> --replace` re-uploads an already-archived artifact after
+verifying its recorded hashes. The archive root is independent of `--dir`, so publishing from an archive never nests. The
 mechanism is `build/deployment_archive.py`, shared with the evaluation publisher.
 
 Environment:
@@ -57,7 +75,8 @@ Usage:
     uv run python -m build.axis_scoring_trace --out build/evaluation   # write the three CSVs first
     uv run python -m build.publish_scoring_trace --plan       # offline: validate + plan, no creds, no network
     uv run python -m build.publish_scoring_trace --dry-run    # read-only id resolution, no mutation, no write
-    uv run python -m build.publish_scoring_trace              # validate, publish, archive
+    uv run python -m build.publish_scoring_trace              # validate, append the generation, archive
+    uv run python -m build.publish_scoring_trace --replace    # overwrite the tables, discarding every generation
 """
 
 from __future__ import annotations
@@ -68,6 +87,7 @@ import sys
 from pathlib import Path
 
 from build import deployment_archive as archive
+from build import trace_generations
 from build.axis_scoring_trace import TABLES as TRACE_SPEC
 from build.publish_evaluation import (
     csv_provenance,
@@ -283,6 +303,82 @@ def deployment_id(out_dir: Path = OUT_DIR) -> str:
     return f"{dvid[:12]}-{sha[:12]}"
 
 
+def generation_id(out_dir: Path = OUT_DIR) -> str:
+    """The `declaration_version_id` the candidate carries: the key of the generation it appends."""
+    _header, rows = _read_rows(out_dir / "axis_results.csv")
+    dvid = rows[0]["declaration_version_id"]
+    if not trace_generations.is_hex_id(dvid):
+        raise RuntimeError(f"declaration_version_id {dvid!r} is not a hex digest")
+    return dvid
+
+
+def append_plan(receipt: dict, deployed: dict[str, dict[str, dict]], generation: str) -> tuple[list[str], list[str]]:
+    """Which tables still need this generation appended, and what stops the append.
+
+    `deployed` is `{table: {declaration_version_id: {"rows": n, ...}}}`, what each table holds now.
+    Returns `(pending, problems)`. A table that already holds the generation at the candidate's row
+    count is left out of `pending`; one that holds it at a different count is a problem, because an
+    append on top of a partial or foreign load repeats rows on the table's grain.
+    """
+    pending: list[str] = []
+    problems: list[str] = []
+    for table in TRACE_TABLES:
+        held = deployed[table].get(generation)
+        if held is None:
+            pending.append(table)
+        elif held["rows"] != receipt[table]["rows"]:
+            problems.append(
+                f"{table} already holds generation {generation[:12]} with {held['rows']} row(s), and the "
+                f"candidate has {receipt[table]['rows']}; appending would repeat rows on the grain"
+            )
+    return pending, problems
+
+
+def deployed_generation_state(dataset: str, table: str, generation: str, expected_rows: int,
+                              timeout: float = 300.0, interval: float = 15.0) -> dict:
+    """Row count and column set of ONE generation in a deployed table, read via pyoso.
+
+    The appended rows are not always visible the instant the run reports SUCCESS, and a table
+    loaded for the first time is not in the query catalog yet (`TablesNotFound`). So the read is
+    repeated until the generation shows its expected row count or `timeout` passes. Whatever was
+    last read is returned, and a count that never arrived fails the comparison the caller makes.
+
+    `columns` are the ones holding a value in this generation. An appended table keeps every
+    column any earlier generation wrote, so a column this generation leaves null is another
+    generation's and says nothing about this load. `_dlt_*` columns are the loader's bookkeeping
+    and are left out, as in `deployed_table_state`.
+    """
+    import time
+
+    from build.warehouse import query
+
+    if not trace_generations.is_hex_id(generation):
+        raise RuntimeError(f"declaration_version_id {generation!r} is not a hex digest")
+    deadline = time.time() + timeout
+    while True:
+        try:
+            rows = query(
+                f"SELECT * FROM currentai.{dataset}.{table} WHERE declaration_version_id = '{generation}'"
+            )
+        except Exception as exc:
+            if "TablesNotFound" not in str(exc) or time.time() >= deadline:
+                raise
+            rows = []
+        if len(rows) == expected_rows or time.time() >= deadline:
+            break
+        time.sleep(interval)
+    columns = {
+        column for row in rows for column, value in row.items()
+        if not column.startswith("_dlt_") and _has_value(value)
+    }
+    return {"rows": len(rows), "columns": sorted(columns)}
+
+
+def _has_value(value: object) -> bool:
+    """False for the nulls a pandas record carries: None, and NaN or NaT, which do not equal themselves."""
+    return value is not None and value == value
+
+
 def archived_files(out_dir: Path = OUT_DIR) -> dict[str, Path]:
     """The candidate files to archive, keyed by their archived name."""
     return {f"{table}.csv": out_dir / f"{table}.csv" for table in TRACE_TABLES}
@@ -296,13 +392,16 @@ def archived_files(out_dir: Path = OUT_DIR) -> dict[str, Path]:
 def deployment_mismatches(expected: dict, deployed: dict) -> list[str]:
     """Problems if the deployed row count or column set does not match the validated candidate.
 
-    Row counts must match exactly. On columns, the deployed table must carry every candidate column
+    Compares the tables present in `deployed`, which on an append are the ones this run wrote and
+    hold the state of its generation alone. Row counts must match exactly. On columns, the deployed table must carry every candidate column
     that holds a value somewhere, and NO column the candidate does not declare. The one permitted
     absence is a candidate column that is null in every row: the loader types columns from records
     and drops one it never sees a value for, so its absence is schema inference, not lost data.
     """
     problems: list[str] = []
     for table in TRACE_TABLES:
+        if table not in deployed:
+            continue
         exp, got = expected[table], deployed[table]
         if got["rows"] != exp["rows"]:
             problems.append(f"{table}: deployed {got['rows']} rows, candidate had {exp['rows']}")
@@ -314,6 +413,11 @@ def deployment_mismatches(expected: dict, deployed: dict) -> list[str]:
         if extra:
             problems.append(f"{table}: deployed table has undeclared columns: {sorted(extra)}")
     return problems
+
+
+def held_generations(dataset_name: str) -> dict[str, dict[str, dict]]:
+    """What each trace table holds now: `{table: {declaration_version_id: {source_git_sha, rows}}}`."""
+    return {t: trace_generations.deployed_generations(dataset_name, t) for t in TRACE_TABLES}
 
 
 def print_plan(receipt: dict, dataset_name: str) -> None:
@@ -334,9 +438,13 @@ def main() -> int:
     parser.add_argument("--archive-root", type=Path, default=DEFAULT_ARCHIVE_ROOT,
                         help="the durable archive + occurrence log (independent of --dir, so publishing "
                              "from an archive never nests)")
+    parser.add_argument("--replace", action="store_true",
+                        help="overwrite the three tables with this candidate instead of appending its "
+                             "generation. DISCARDS every generation the tables hold")
     parser.add_argument("--rollback", metavar="ARTIFACT_ID",
                         help="re-upload an already-archived artifact by its artifact_id; verifies its "
-                             "recorded hashes and records a rollback, not a deploy")
+                             "recorded hashes and records a rollback, not a deploy. Overwrites the "
+                             "tables, so it requires --replace")
     parser.add_argument("--deploy-artifact", metavar="ARTIFACT_ID",
                         help="deploy an already-staged/Released artifact by its artifact_id: re-upload "
                              "its EXACT archived bytes (verified against their recorded hashes) and "
@@ -360,6 +468,13 @@ def main() -> int:
     ) if on]
     if len(active_modes) > 1:
         print(f"{' and '.join(active_modes)} are mutually exclusive — choose one operation", file=sys.stderr)
+        return 2
+    if args.rollback and not args.replace:
+        print("--rollback overwrites the three tables with one archived generation and discards every "
+              "other generation they hold; pass --replace with it to confirm that", file=sys.stderr)
+        return 2
+    if args.stage_artifact and args.replace:
+        print("--stage-artifact writes nothing to OSO, so --replace has no meaning with it", file=sys.stderr)
         return 2
     if args.stage_artifact and (args.dry_run or args.plan):
         print("--stage-artifact writes the artifact and cannot be combined with --dry-run/--plan "
@@ -436,7 +551,8 @@ def main() -> int:
 
     previous = archive.current_live_artifact_id(args.archive_root)
     if previous is not None:
-        print(f"currently live artifact (the rollback target if this is bad): {previous}")
+        print(f"last recorded artifact: {previous}. Restoring it means --rollback with --replace, "
+              "which discards every other generation the tables hold")
 
     if args.dry_run:
         # READ-ONLY resolution — create=False — so a dry run creates NOTHING and writes nothing.
@@ -446,10 +562,21 @@ def main() -> int:
             return 0
         models = resolve_static_models(dataset_id, org_id, token, TRACE_TABLES, create=False)
         print(f"dataset {dataset_name} = {dataset_id}")
+        pending = list(TRACE_TABLES)
+        if not args.replace:
+            pending, problems = append_plan(receipt, held_generations(dataset_name), generation_id(src_dir))
+            for problem in problems:
+                print(f"  ! {problem}", file=sys.stderr)
+            if problems:
+                return 2
         for table in TRACE_TABLES:
             model_id = models[table][0]
-            verb = "would upload" if model_id else "would create + upload"
-            print(f"  {verb} {table}.csv ({receipt[table]['rows']:,} rows) -> {model_id}")
+            if table not in pending:
+                print(f"  would skip {table}: it already holds this generation")
+                continue
+            verb = "upload" if model_id else "create + upload"
+            how = "replacing the table" if args.replace else "appending one generation"
+            print(f"  would {verb} {table}.csv ({receipt[table]['rows']:,} rows), {how} -> {model_id}")
         return 0  # NO write, NO create
 
     # REAL publish. Persist the candidate bytes content-addressed BEFORE any create-capable platform
@@ -463,12 +590,40 @@ def main() -> int:
     models = resolve_static_models(dataset_id, org_id, token, TRACE_TABLES, create=True)
     print(f"dataset {dataset_name} = {dataset_id}")
 
-    if materialize(dataset_id, models, TRACE_TABLES, src_dir, token, dataset_name, receipt, deployment_mismatches):
-        return 2
+    if args.replace:
+        print("replacing the three tables: every generation they hold is discarded")
+        if materialize(dataset_id, models, TRACE_TABLES, src_dir, token, dataset_name, receipt, deployment_mismatches):
+            return 2
+    else:
+        generation = generation_id(src_dir)
+        pending, problems = append_plan(receipt, held_generations(dataset_name), generation)
+        if problems:
+            print("cannot append this generation:", file=sys.stderr)
+            for problem in problems:
+                print(f"  ! {problem}", file=sys.stderr)
+            return 2
+        for table in TRACE_TABLES:
+            if table not in pending:
+                print(f"  {table}: already holds generation {generation[:12]}, not appended again")
+        if not pending:
+            print(f"generation {generation[:12]} is already in all three tables; nothing to append")
+            # A run that appended and then failed before recording leaves a generation the log
+            # does not know. The tables are the evidence here, so the record is caught up.
+            if not any(o["deployment_id"] == deployment for o in archive.occurrences(args.archive_root)):
+                archive.record_occurrence(args.archive_root, operation, deployment, aid, previous)
+                print(f"recorded {operation} of artifact {aid}, which no earlier run had recorded")
+            return 0
+
+        def generation_state(dataset: str, table: str) -> dict:
+            return deployed_generation_state(dataset, table, generation, receipt[table]["rows"])
+
+        if materialize(dataset_id, models, tuple(pending), src_dir, token, dataset_name, receipt,
+                       deployment_mismatches, write_disposition="APPEND", state_fn=generation_state):
+            return 2
 
     archive.record_occurrence(args.archive_root, operation, deployment, aid, previous)
     print(f"\nevery load run SUCCESS and deployed data verified; recorded {operation} of artifact {aid} "
-          f"(generation {deployment}) — now the live state in {args.archive_root}")
+          f"(generation {deployment}) in {args.archive_root}")
     return 0
 
 

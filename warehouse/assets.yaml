@@ -121,7 +121,8 @@ assets:
     'openness' on every row today. Joins to registry.product_openness_evidence (recorded evidence)
     and registry.product_score_sources (source document) on their natural keys rather than
     republishing them.
-  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+  refresh: 'static model holding one generation per publish, appended by scoring-trace.yml or a
+    maintainer and never replaced in place; built by the repo-side release builder
     (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
     published roster (build_payload), stamped with the run-time declaration_version_id. The
     candidate CSV is written to build/evaluation/axis_facts.csv (git-ignored) and publishing to OSO
@@ -161,7 +162,8 @@ assets:
     dual-run agreement with the recorded score made queryable (true on every scored row today). Not
     a second copy of the recorded score in registry.product_scores — it is the recomputed result
     from build/check_rubric, carried beside the recorded value so the two can be compared.
-  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+  refresh: 'static model holding one generation per publish, appended by scoring-trace.yml or a
+    maintainer and never replaced in place; built by the repo-side release builder
     (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
     published roster, stamped with the run-time declaration_version_id. The candidate CSV is written
     to build/evaluation/axis_results.csv (git-ignored) and publishing to OSO is a maintainer step,
@@ -199,7 +201,8 @@ assets:
     the same first-match-wins primitive walk_formula projects — so this is not a second scorer.
     outcome is fired | skipped | fell_through_tier | blocked_on_tier; rule_conditions join back to
     axis_facts by dimension name, which is the result -> matched rule -> normalized fact chain.
-  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+  refresh: 'static model holding one generation per publish, appended by scoring-trace.yml or a
+    maintainer and never replaced in place; built by the repo-side release builder
     (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
     published roster, stamped with the run-time declaration_version_id. The candidate CSV is written
     to build/evaluation/axis_rule_matches.csv (git-ignored) and publishing to OSO is a maintainer

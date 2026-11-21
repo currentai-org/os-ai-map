@@ -111,7 +111,7 @@ def _next_url(headers: dict) -> str | None:
     secrets=["HUGGING_FACE_TOKEN"],
     environment_name="Default",
     external_origins=["https://huggingface.co"],
-    capabilities=oso.Capabilities(fetch=True),
+    capabilities=oso.Capabilities(fetch=True), columns=[oso.Column(name="hf_id", type="VARCHAR"), oso.Column(name="author", type="VARCHAR"), oso.Column(name="pipeline_tag", type="VARCHAR"), oso.Column(name="library_name", type="VARCHAR"), oso.Column(name="license", type="VARCHAR"), oso.Column(name="downloads_30d", type="BIGINT"), oso.Column(name="likes", type="BIGINT"), oso.Column(name="created_at", type="TIMESTAMP(6)"), oso.Column(name="last_modified", type="TIMESTAMP(6)"), oso.Column(name="gated", type="BOOLEAN"), oso.Column(name="private", type="BOOLEAN"), oso.Column(name="tags", type="VARCHAR"), oso.Column(name="fetched_at", type="TIMESTAMP(6)")]
 )
 async def model_universe(context: oso.AsyncContext) -> oso.DataFrame:
     token: str = await context.secret("HUGGING_FACE_TOKEN")

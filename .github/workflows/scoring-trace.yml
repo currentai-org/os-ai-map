@@ -13,12 +13,12 @@
 # commits and 241 products behind the corpus, and an agreement figure read off them described
 # a corpus that no longer existed. The agreement is also re-checked and reported every week.
 #
-# It does NOT make the Phase-7 condition reachable, which an earlier version of this comment
-# claimed. `axis_results` holds one `source_git_sha` after any publish, because the static
-# model replaces in place (#412), and this workflow does not commit or upload the publisher's
-# archive — that defaults to ephemeral runner storage. So generations do not accumulate
-# anywhere, and "agreement across multiple releases" cannot become true by running this more
-# often. Closing that needs release-scoped tables or a durable per-publish record; see #384.
+# It also makes the Phase-7 condition observable. Each publish APPENDS one generation, the rows
+# carrying that publish's `declaration_version_id`, so the three tables hold the trace of every
+# commit they were published from. `build/trace_generations.py` reports the agreement per
+# generation, and ruling R-2026-11-08-t says which generations count. A re-run of the same
+# commit appends nothing: the publisher skips a table that already holds the generation.
+# Retiring the warehouse computation is still a separate, authorized step; see #384.
 #
 # The trace keys on `declaration_version_id` and carries no `release_id` and no
 # `observation_snapshot_id` — a deterministic evaluation of the declarations depends on no
@@ -105,3 +105,16 @@ jobs:
           # check is the only thing that catches it.
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_scoring_trace --dir build/evaluation
+      - name: Report the generations the tables now hold
+        # Report-only: it exits 0 whatever it reads, so a slow catalog cannot fail a publish that
+        # already verified its own generation.
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          {
+            echo "## Scoring-trace generations"
+            echo
+            echo '```'
+            uv run python -m build.trace_generations
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
