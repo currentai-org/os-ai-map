@@ -148,13 +148,66 @@ def test_the_loaders_boolean_and_the_csvs_string_both_read_as_reproducing():
     assert gen["agreeing"] == 2 and gen["disagreeing"] == ["r [c]"]
 
 
-def test_commit_facts_reads_this_checkouts_own_head():
-    head = subprocess.run(["git", "-C", str(T.ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-    facts = T.commit_facts(head)
-    assert facts["identity"] == "reachable" and facts["committed_at"]
+def _git(repo, *args, when=None):
+    env = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.org", "GIT_COMMITTER_NAME": "t",
+           "GIT_COMMITTER_EMAIL": "t@example.org", "PATH": __import__("os").environ["PATH"], "HOME": str(repo)}
+    if when:
+        env["GIT_AUTHOR_DATE"] = env["GIT_COMMITTER_DATE"] = when
+    done = subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True, env=env, check=True)
+    return done.stdout.strip()
+
+
+def _commit(repo, name, when):
+    (repo / name).write_text(name)
+    _git(repo, "add", name)
+    _git(repo, "commit", "-q", "-m", name, when=when)
+    return _git(repo, "rev-parse", "HEAD")
+
+
+@pytest.fixture
+def repo(tmp_path):
+    _git(tmp_path, "init", "-q", "-b", "main")
+    return tmp_path
+
+
+def test_commit_times_are_utc_so_they_order_across_committer_offsets(repo):
+    """The later commit carries the earlier-looking local date: 23:30 at -08:00 is 07:30 UTC the
+    next day. Compared as written, the two would sort the wrong way round."""
+    earlier = _commit(repo, "a", "2026-11-17T01:00:00+00:00")
+    later = _commit(repo, "b", "2026-11-16T23:30:00-08:00")
+    first, second = T.commit_facts(earlier, repo), T.commit_facts(later, repo)
+    assert first["committed_at"] == "2026-11-17T01:00:00+00:00"
+    assert second["committed_at"] == "2026-11-17T07:30:00+00:00"
+    assert first["committed_at"] < second["committed_at"]
+
+
+def test_a_commit_is_judged_against_main_not_against_the_branch_checked_out(repo):
+    """A branch cut before a publish lacks that publish's commit. It is still a real generation."""
+    base = _commit(repo, "a", "2026-11-09T07:00:00+00:00")
+    _git(repo, "update-ref", "refs/remotes/origin/main", base)
+    _git(repo, "checkout", "-q", "-b", "feature")
+    side = _commit(repo, "side", "2026-11-10T07:00:00+00:00")
+    _git(repo, "checkout", "-q", "main")
+    published = _commit(repo, "b", "2026-11-16T07:00:00+00:00")
+    _git(repo, "update-ref", "refs/remotes/origin/main", published)
+    _git(repo, "checkout", "-q", "feature")
+
+    assert T.commit_facts(published, repo)["identity"] == "reachable"
+    assert T.commit_facts(side, repo)["identity"] == "unreachable", "on the branch, never on main"
+
+
+def test_a_checkout_with_no_main_ref_falls_back_to_its_own_head(repo):
+    head = _commit(repo, "a", "2026-11-09T07:00:00+00:00")
+    assert T.commit_facts(head, repo)["identity"] == "reachable"
 
 
 def test_commit_facts_never_calls_a_commit_it_cannot_find_reachable():
     facts = T.commit_facts("0" * 40)
     assert facts["identity"] in {"unreachable", "unknown"} and facts["committed_at"] is None
     assert T.commit_facts("not-a-sha; rm -rf")["identity"] == "unreachable"
+
+
+def test_a_null_deferral_reason_from_pandas_is_not_printed_as_nan():
+    row = _row(DVID_A, "aaaaaa01", "held-one", status="deferred", reproduces=None, reason=float("nan"))
+    (gen,) = T.summarize([row])
+    assert gen["deferred"] == ["held-one [c]: no reason recorded"]

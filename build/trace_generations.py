@@ -14,9 +14,10 @@ A generation is complete when all of these hold:
   * every row is `scored`, and every scored row has `reproduces_recorded` true. A row in any
     other status is a product the evaluator did not score, so the generation agrees on fewer
     products than it covers;
-  * its `source_git_sha` is a commit reachable from the checked-out history, which is what ties
-    the generation to a real state of this repository. A shallow clone cannot answer that and
-    the report says so rather than guessing.
+  * its `source_git_sha` is a commit on the main line: an ancestor of `origin/main`, or of
+    `HEAD` in a checkout with no such ref. That is what ties the generation to a real state of
+    this repository. A shallow clone cannot answer that and the report says so rather than
+    guessing.
 
 Unscored rows are of two kinds, and the report keeps them apart. A `deferred` row is a product
 its category's `scoring_recipe` declines to score, with the reason written in `sources/`; the
@@ -25,8 +26,8 @@ treats a deferred row as a difference to reconcile or adjudicate, so it keeps a 
 being complete, and the report also counts the generations that are complete apart from their
 declared deferrals. That second count is what a ruling adjudicating the deferrals would admit.
 
-Generations are ordered by the commit date of their `source_git_sha`, read from git. The rows
-carry no timestamp of their own: the trace is a deterministic function of the declarations.
+Generations are ordered by the commit time of their `source_git_sha`, read from git in UTC. The
+rows carry no timestamp of their own: the trace is a deterministic function of the declarations.
 
 This is a report. It exits 0 whatever it finds, including when the table cannot be read, so it
 is safe to run after a gate without changing that gate's verdict. Retiring the warehouse
@@ -43,6 +44,7 @@ import argparse
 import json
 import re
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +53,10 @@ TRACE_TABLES: tuple[str, ...] = ("axis_facts", "axis_rule_matches", "axis_result
 
 # How many complete generations R-2026-11-08-t accepts as agreement across releases.
 REQUIRED_GENERATIONS = 4
+
+# The ref a generation's commit has to be an ancestor of. A branch's HEAD lacks every commit main
+# gained after the branch point, so it would call the newest generations unreachable.
+MAIN_REF = "origin/main"
 
 # A declaration_version_id is a hex digest and a source_git_sha a git object name. Both are
 # interpolated into SQL and git arguments below, so anything else is refused first.
@@ -120,7 +126,9 @@ def summarize(rows: list[dict]) -> list[dict]:
         summary["rows"] += 1
         product = f"{row['product_slug']} [{row['category_slug']}]"
         if row["status"] == "deferred":
-            reason = str(row.get("deferral_reason") or "").strip() or "no reason recorded"
+            # A null arrives from pandas as NaN, which is truthy, so test for a string.
+            reason = row.get("deferral_reason")
+            reason = (reason.strip() if isinstance(reason, str) else "") or "no reason recorded"
             summary["deferred"].append(f"{product}: {reason}")
         elif row["status"] != "scored":
             summary["undecided"].append(f"{product}: {row['status']}")
@@ -143,9 +151,11 @@ def _git(root: Path, *args: str) -> subprocess.CompletedProcess:
 def commit_facts(sha: str, root: Path = ROOT) -> dict:
     """What this checkout knows about a generation's commit.
 
-    `identity` is `reachable` when the commit is an ancestor of HEAD, `unreachable` when git knows
-    the history and the commit is not in it, and `unknown` when the clone is shallow and so cannot
-    tell the two apart. `committed_at` is the commit's ISO date, or None when git cannot read it.
+    `identity` is `reachable` when the commit is an ancestor of the main line (`origin/main`, or
+    HEAD where that ref does not exist), `unreachable` when git knows the history and the commit
+    is not in it, and `unknown` when the clone is shallow and so cannot tell the two apart.
+    `committed_at` is the commit time as an ISO string in UTC, so two of them compare in time
+    order as strings, or None when git cannot read it.
     """
     if not is_hex_id(sha):
         return {"identity": "unreachable", "committed_at": None}
@@ -153,8 +163,10 @@ def commit_facts(sha: str, root: Path = ROOT) -> dict:
     is_commit = _git(root, "cat-file", "-e", f"{sha}^{{commit}}").returncode == 0
     if not is_commit:
         return {"identity": "unknown" if shallow else "unreachable", "committed_at": None}
-    committed_at = _git(root, "show", "-s", "--format=%cI", sha).stdout.strip() or None
-    reachable = _git(root, "merge-base", "--is-ancestor", sha, "HEAD").returncode == 0
+    epoch = _git(root, "show", "-s", "--format=%ct", sha).stdout.strip()
+    committed_at = datetime.fromtimestamp(int(epoch), timezone.utc).isoformat() if epoch.isdigit() else None
+    has_main = _git(root, "rev-parse", "--verify", "--quiet", f"{MAIN_REF}^{{commit}}").returncode == 0
+    reachable = _git(root, "merge-base", "--is-ancestor", sha, MAIN_REF if has_main else "HEAD").returncode == 0
     identity = "reachable" if reachable else ("unknown" if shallow else "unreachable")
     return {"identity": identity, "committed_at": committed_at}
 

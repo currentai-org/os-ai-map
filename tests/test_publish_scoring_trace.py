@@ -609,6 +609,10 @@ def test_a_generation_the_tables_already_hold_is_not_appended_again(tmp_path, mo
 
     assert P.main() == 0
     assert requested == [], "nothing is uploaded or run for a generation already in all three tables"
+    # No earlier run recorded this generation, so the record is caught up once, and only once.
+    assert [o["operation"] for o in P.archive.occurrences(tmp_path / "archive")] == ["deploy"]
+    assert P.main() == 0
+    assert len(P.archive.occurrences(tmp_path / "archive")) == 1
 
 
 def test_a_partially_loaded_generation_stops_the_publish_before_any_run(tmp_path, monkeypatch):
@@ -658,3 +662,45 @@ def test_generation_id_refuses_an_id_that_is_not_a_digest(tmp_path):
     path.write_text(path.read_text().replace(DVID, "x' OR '1'='1"))
     with pytest.raises(RuntimeError, match="not a hex digest"):
         P.generation_id(tmp_path)
+
+
+# --- reading one generation back from an appended table ---------------------------------------
+
+
+def test_the_read_back_waits_out_a_table_the_catalog_has_not_registered(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda seconds: None)
+    answers = iter([RuntimeError("TablesNotFound: currentai.evaluation.axis_results"),
+                    [{"declaration_version_id": DVID, "product_slug": "p"}]])
+
+    def query(sql):
+        answer = next(answers)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
+    monkeypatch.setattr("build.warehouse.query", query)
+    state = P.deployed_generation_state("evaluation", "axis_results", DVID, expected_rows=1)
+    assert state == {"rows": 1, "columns": ["declaration_version_id", "product_slug"]}
+
+
+def test_the_read_back_reports_any_other_failure(monkeypatch):
+    def query(sql):
+        raise RuntimeError("401 Unauthorized")
+
+    monkeypatch.setattr("build.warehouse.query", query)
+    with pytest.raises(RuntimeError, match="401"):
+        P.deployed_generation_state("evaluation", "axis_results", DVID, expected_rows=1)
+
+
+def test_a_column_only_an_older_generation_filled_is_not_this_generations(monkeypatch):
+    """An appended table keeps every column any generation wrote. One this generation leaves null
+    must not read as an undeclared column, or the first removed column fails every later publish."""
+    rows = [{"declaration_version_id": DVID, "product_slug": "p", "retired_column": None,
+             "license_tier": float("nan"), "result_score": 0, "_dlt_load_id": "1"}]
+    monkeypatch.setattr("build.warehouse.query", lambda sql: rows)
+    state = P.deployed_generation_state("evaluation", "axis_results", DVID, expected_rows=1)
+    assert state["columns"] == ["declaration_version_id", "product_slug", "result_score"]
+
+    expected = {"axis_results": {"rows": 1, "columns": ["declaration_version_id", "product_slug", "result_score", "license_tier"],
+                                 "all_null_columns": ["license_tier"]}}
+    assert P.deployment_mismatches(expected, {"axis_results": state}) == []

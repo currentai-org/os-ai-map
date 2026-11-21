@@ -47,9 +47,10 @@ generation from the second count to the first.
 Reaching the count does not retire anything: dropping `scores.openness_facts` and
 `scores.openness_computed` keeps its own authorization (#384).
 
-A reader that wants one evaluation selects a `declaration_version_id`. The rows carry no timestamp,
-because the trace is a deterministic function of the declarations, so "newest" is the generation
-whose `source_git_sha` is the latest commit, which the report resolves from git.
+A reader that wants one evaluation selects a `declaration_version_id`; a query with no such filter
+reads every generation at once and counts each product once per generation. The rows carry no
+timestamp, because the trace is a deterministic function of the declarations, so "newest" is the
+generation whose `source_git_sha` is the latest commit, which the report resolves from git.
 
 "Only a maintainer materializes them" still holds and is about editor sessions: the workflow
 carries the maintainer's `OSO_API_KEY` and `OSO_ORG_ID` as repository secrets, the same way
@@ -112,6 +113,13 @@ When all three tables already hold the generation there is nothing to do, and th
 `--replace` overwrites the three tables with the candidate and **discards every generation they
 hold**, which restarts the count toward Phase 7. It is for repairing a table whose contents can no
 longer be trusted, and nothing schedules it.
+
+The publisher has no way to rewrite one generation and keep the rest. The check for what a table
+holds and the append that follows are two steps, so a publish run by hand while the scheduled one
+is in flight can append the same generation twice. Do not overlap them: the workflow's concurrency
+group covers its own runs and nothing covers a terminal. A table that does end up holding a
+generation twice or in part stops every later publish of that commit, and `--replace` is then the
+only repair this tool offers.
 
 `--plan` and `--dry-run` write nothing. A real publish resolves the `evaluation` dataset and each
 static model, `PUT`s the CSV, and requests the load run **per static model** (`datasetId` +

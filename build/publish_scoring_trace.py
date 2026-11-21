@@ -338,10 +338,15 @@ def deployed_generation_state(dataset: str, table: str, generation: str, expecte
                               timeout: float = 300.0, interval: float = 15.0) -> dict:
     """Row count and column set of ONE generation in a deployed table, read via pyoso.
 
-    The appended rows are not always visible the instant the run reports SUCCESS, so the read is
+    The appended rows are not always visible the instant the run reports SUCCESS, and a table
+    loaded for the first time is not in the query catalog yet (`TablesNotFound`). So the read is
     repeated until the generation shows its expected row count or `timeout` passes. Whatever was
     last read is returned, and a count that never arrived fails the comparison the caller makes.
-    `_dlt_*` columns are the loader's bookkeeping and are left out, as in `deployed_table_state`.
+
+    `columns` are the ones holding a value in this generation. An appended table keeps every
+    column any earlier generation wrote, so a column this generation leaves null is another
+    generation's and says nothing about this load. `_dlt_*` columns are the loader's bookkeeping
+    and are left out, as in `deployed_table_state`.
     """
     import time
 
@@ -351,14 +356,27 @@ def deployed_generation_state(dataset: str, table: str, generation: str, expecte
         raise RuntimeError(f"declaration_version_id {generation!r} is not a hex digest")
     deadline = time.time() + timeout
     while True:
-        rows = query(
-            f"SELECT * FROM currentai.{dataset}.{table} WHERE declaration_version_id = '{generation}'"
-        )
+        try:
+            rows = query(
+                f"SELECT * FROM currentai.{dataset}.{table} WHERE declaration_version_id = '{generation}'"
+            )
+        except Exception as exc:
+            if "TablesNotFound" not in str(exc) or time.time() >= deadline:
+                raise
+            rows = []
         if len(rows) == expected_rows or time.time() >= deadline:
             break
         time.sleep(interval)
-    columns = [c for c in (rows[0].keys() if rows else []) if not c.startswith("_dlt_")]
+    columns = {
+        column for row in rows for column, value in row.items()
+        if not column.startswith("_dlt_") and _has_value(value)
+    }
     return {"rows": len(rows), "columns": sorted(columns)}
+
+
+def _has_value(value: object) -> bool:
+    """False for the nulls a pandas record carries: None, and NaN or NaT, which do not equal themselves."""
+    return value is not None and value == value
 
 
 def archived_files(out_dir: Path = OUT_DIR) -> dict[str, Path]:
@@ -533,7 +551,8 @@ def main() -> int:
 
     previous = archive.current_live_artifact_id(args.archive_root)
     if previous is not None:
-        print(f"currently live artifact (the rollback target if this is bad): {previous}")
+        print(f"last recorded artifact: {previous}. Restoring it means --rollback with --replace, "
+              "which discards every other generation the tables hold")
 
     if args.dry_run:
         # READ-ONLY resolution — create=False — so a dry run creates NOTHING and writes nothing.
@@ -588,6 +607,11 @@ def main() -> int:
                 print(f"  {table}: already holds generation {generation[:12]}, not appended again")
         if not pending:
             print(f"generation {generation[:12]} is already in all three tables; nothing to append")
+            # A run that appended and then failed before recording leaves a generation the log
+            # does not know. The tables are the evidence here, so the record is caught up.
+            if not any(o["deployment_id"] == deployment for o in archive.occurrences(args.archive_root)):
+                archive.record_occurrence(args.archive_root, operation, deployment, aid, previous)
+                print(f"recorded {operation} of artifact {aid}, which no earlier run had recorded")
             return 0
 
         def generation_state(dataset: str, table: str) -> dict:

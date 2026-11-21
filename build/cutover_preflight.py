@@ -207,7 +207,7 @@ def newest_generation(table: str, rows: list[dict], facts_for=None) -> list[dict
 
     The scoring-trace tables hold one generation per publish (`build/publish_scoring_trace.py`), and
     the cutover compares its candidate with the latest of them. Generations are ordered by the commit
-    date of their `source_git_sha`, read from git by `build.trace_generations.commit_facts`. A table
+    time of their `source_git_sha`, read from git in UTC by `build.trace_generations.commit_facts`. A table
     with no `source_git_sha` column, or holding a single generation, is returned whole. A generation
     whose commit this checkout cannot date raises: picking one anyway would compare the candidate
     with an arbitrary release.
