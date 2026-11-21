@@ -155,10 +155,15 @@ both find a table empty of a generation and both append it. The rule that preven
 
 - **The `scoring-trace` workflow is the writer.** Its concurrency group queues its own runs, so two
   of them never append together. For a publish outside the Monday cadence, dispatch the workflow.
-- **An append from a terminal is the exception.** The publisher refuses it unless
+- **An append from a terminal is for a coordinated recovery only**: the workflow cannot run, and
+  the tables need a publish before it can. The publisher refuses the append unless
   `--outside-workflow` is passed, and with the flag it asks GitHub whether a run of the workflow is
-  queued or in progress and refuses while one is, or when GitHub cannot say. Leave the workflow
-  alone until the terminal publish finishes; nothing stops a run dispatched after the check.
+  queued or in progress and refuses while one is, or when GitHub cannot say.
+- **The flag is not a lock.** It checks the workflow and cannot see another terminal, so two
+  manual publishes started together both pass and can both append. Before using it, agree who
+  publishes, tell the other maintainers, and leave the workflow undispatched until the publish
+  finishes; nothing stops a run dispatched after the check. Afterwards run
+  `trace_generations --verify`, which fails on a generation that landed twice.
 - `--plan` and `--dry-run` write nothing and need no flag.
 
 A table that does end up holding a generation twice or in part stops every later publish of that

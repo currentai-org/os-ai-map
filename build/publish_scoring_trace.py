@@ -57,6 +57,11 @@ The single writer is the `scoring-trace` workflow: its concurrency group runs on
 time. A publish from anywhere else has to pass `--outside-workflow`, and it then asks GitHub
 whether a `scoring-trace` run is queued or in progress and refuses if one is, or if it cannot tell.
 
+That flag is for a coordinated recovery and nothing else: the workflow cannot run, and one named
+person publishes while everyone else holds off. It is not a lock. The question it asks GitHub
+covers the workflow only, so two people who each pass the flag at the same moment both get through
+and can both append.
+
 `--replace` is the other write: it overwrites all three tables with the candidate and DISCARDS
 every generation they hold. `--rollback` restores archived bytes that way, so it requires
 `--replace` to be passed with it.
@@ -423,7 +428,8 @@ def writer_problems(outside_workflow: bool, in_flight=workflow_runs_in_flight) -
     if not outside_workflow:
         return ["an append outside the scoring-trace workflow needs --outside-workflow; the workflow's "
                 "concurrency group is what keeps two publishers from appending one generation twice, so "
-                "dispatch the workflow where you can"]
+                "dispatch the workflow. The flag is for a coordinated recovery when the workflow cannot "
+                "run, with one person publishing: it does not stop a second manual publisher"]
     runs = in_flight()
     if runs is None:
         return ["could not ask GitHub whether a scoring-trace run is in flight, so a second writer cannot be ruled out"]
@@ -548,9 +554,11 @@ def main() -> int:
                         help="overwrite the three tables with this candidate instead of appending its "
                              "generation. DISCARDS every generation the tables hold")
     parser.add_argument("--outside-workflow", action="store_true",
-                        help="append from outside the scoring-trace workflow, which is the single writer. "
-                             "The publisher then asks GitHub that no scoring-trace run is queued or in "
-                             "progress, and refuses if one is or if it cannot tell")
+                        help="for a coordinated recovery only, when the workflow cannot run: append from "
+                             "outside the scoring-trace workflow, which is the single writer. The publisher "
+                             "asks GitHub that no scoring-trace run is queued or in progress, and refuses if "
+                             "one is or if it cannot tell. It cannot see another manual publish, so one "
+                             "person runs it and nobody else does")
     parser.add_argument("--rollback", metavar="ARTIFACT_ID",
                         help="re-upload an already-archived artifact by its artifact_id; verifies its "
                              "recorded hashes and records a rollback, not a deploy. Overwrites the "
