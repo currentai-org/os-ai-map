@@ -323,6 +323,7 @@ def test_dry_run_with_credentials_makes_no_mutation_and_no_write(tmp_path, monke
     monkeypatch.setattr(P, "graphql", fake_graphql)
     monkeypatch.setattr(PR, "graphql", fake_graphql)
     monkeypatch.setattr(PE, "graphql", fake_graphql)  # resolve_evaluation_dataset uses PE's graphql
+    monkeypatch.setattr(P, "held_generations", lambda dataset: {t: {} for t in P.TRACE_TABLES})
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
@@ -382,6 +383,8 @@ def _wire(monkeypatch, requested):
     monkeypatch.setattr(PR, "graphql", fake)
     monkeypatch.setattr(PE, "graphql", fake)
     monkeypatch.setattr(PE, "upload", lambda path, url: None)
+    # The tables hold no generation yet, so a default publish appends to all three.
+    monkeypatch.setattr(P, "held_generations", lambda dataset: {t: {} for t in P.TRACE_TABLES})
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
 
@@ -391,7 +394,8 @@ def test_load_run_is_requested_once_per_model_with_static_model_id(tmp_path, mon
     requested: list[dict] = []
     _wire(monkeypatch, requested)
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
-    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(P, "deployed_generation_state",
+                        lambda dataset, table, generation, expected_rows: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
@@ -415,7 +419,8 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
         return "SUCCESS"
 
     monkeypatch.setattr(PE, "poll_run_group", record_poll)
-    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(P, "deployed_generation_state",
+                        lambda dataset, table, generation, expected_rows: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
@@ -429,10 +434,10 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     _wire(monkeypatch, requested)
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "FAILED")
 
-    def boom(dataset, table):
+    def boom(dataset, table, generation, expected_rows):
         raise AssertionError("must not read deployed state when a run failed")
 
-    monkeypatch.setattr(PE, "deployed_table_state", boom)
+    monkeypatch.setattr(P, "deployed_generation_state", boom)
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2
@@ -501,7 +506,8 @@ def test_deploy_artifact_deploys_the_archived_bytes_bound_to_the_id(tmp_path, mo
     requested: list[dict] = []
     _wire(monkeypatch, requested)
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
-    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: deployed[table])
+    monkeypatch.setattr(P, "deployed_generation_state",
+                        lambda dataset, table, generation, expected_rows: deployed[table])
     uploaded: dict[str, bytes] = {}
     monkeypatch.setattr(PE, "upload",
                         lambda path, url: uploaded.__setitem__(P.Path(path).name, P.Path(path).read_bytes()))
@@ -540,3 +546,115 @@ def test_the_trace_archive_root_is_its_own_never_the_evaluation_publishers(tmp_p
     # Default archive roots are distinct, so neither publisher reads the other's archives.
     assert P.DEFAULT_ARCHIVE_ROOT.name == "scoring-trace-deployments"
     assert P.DEFAULT_ARCHIVE_ROOT != PE.DEFAULT_ARCHIVE_ROOT
+
+
+# --- one generation per publish: append, skip what is held, refuse a partial load -------------
+
+
+def _receipt(rows: int) -> dict:
+    return {t: {"rows": rows} for t in P.TRACE_TABLES}
+
+
+def test_append_plan_appends_to_every_table_that_lacks_the_generation():
+    held = {t: {"e" * 64: {"source_git_sha": "abc1234", "rows": 9}} for t in P.TRACE_TABLES}
+    assert P.append_plan(_receipt(3), held, DVID) == (list(P.TRACE_TABLES), [])
+
+
+def test_append_plan_skips_a_table_that_already_holds_the_generation():
+    """A publish that failed after its first table resumes with the other two, and a publish run
+    twice appends nothing the second time."""
+    held = {t: {} for t in P.TRACE_TABLES}
+    held["axis_facts"] = {DVID: {"source_git_sha": SHA, "rows": 3}}
+    pending, problems = P.append_plan(_receipt(3), held, DVID)
+    assert pending == ["axis_rule_matches", "axis_results"] and problems == []
+
+    everywhere = {t: {DVID: {"source_git_sha": SHA, "rows": 3}} for t in P.TRACE_TABLES}
+    assert P.append_plan(_receipt(3), everywhere, DVID) == ([], [])
+
+
+def test_append_plan_refuses_a_generation_held_at_another_row_count():
+    held = {t: {} for t in P.TRACE_TABLES}
+    held["axis_results"] = {DVID: {"source_git_sha": SHA, "rows": 2}}
+    pending, problems = P.append_plan(_receipt(3), held, DVID)
+    assert len(problems) == 1 and "axis_results" in problems[0] and "2 row(s)" in problems[0]
+
+
+def test_a_default_publish_appends_and_never_replaces(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    seen: list[tuple] = []
+
+    def state(dataset, table, generation, expected_rows):
+        seen.append((table, generation, expected_rows))
+        return {"rows": expected_rows, "columns": sorted(P.EXPECTED_HEADERS[table])}
+
+    monkeypatch.setattr(P, "deployed_generation_state", state)
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+
+    assert P.main() == 0
+    assert [r["writeDisposition"] for r in requested] == ["APPEND"] * len(P.TRACE_TABLES)
+    assert seen == [(t, DVID, 1) for t in P.TRACE_TABLES], "the read-back is scoped to this generation"
+    assert [o["operation"] for o in P.archive.occurrences(tmp_path / "archive")] == ["deploy"]
+
+
+def test_a_generation_the_tables_already_hold_is_not_appended_again(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    monkeypatch.setattr(P, "held_generations", lambda dataset: {
+        t: {DVID: {"source_git_sha": SHA, "rows": 1}} for t in P.TRACE_TABLES})
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+
+    assert P.main() == 0
+    assert requested == [], "nothing is uploaded or run for a generation already in all three tables"
+
+
+def test_a_partially_loaded_generation_stops_the_publish_before_any_run(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    held = {t: {} for t in P.TRACE_TABLES}
+    held["axis_facts"] = {DVID: {"source_git_sha": SHA, "rows": 7}}
+    monkeypatch.setattr(P, "held_generations", lambda dataset: held)
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+
+    assert P.main() == 2
+    assert requested == []
+
+
+def test_replace_overwrites_all_three_tables_and_reads_no_generations(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+
+    def no_generation_read(dataset):
+        raise AssertionError("--replace does not consult the held generations")
+
+    monkeypatch.setattr(P, "held_generations", no_generation_read)
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(PE, "deployed_table_state",
+                        lambda dataset, table: {"rows": 1, "columns": sorted(P.EXPECTED_HEADERS[table])})
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--replace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+
+    assert P.main() == 0
+    assert len(requested) == len(P.TRACE_TABLES)
+    assert all("writeDisposition" not in r for r in requested), "the platform default is REPLACE"
+
+
+def test_rollback_without_replace_is_refused_before_anything_is_read(tmp_path, monkeypatch):
+    """A rollback overwrites the tables with one archived generation, which discards the others."""
+    monkeypatch.setattr(P, "graphql", lambda *a, **k: pytest.fail("no network on a refused rollback"))
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--rollback", "x", "--archive-root", str(tmp_path / "archive")])
+    assert P.main() == 2
+    assert not (tmp_path / "archive").exists()
+
+
+def test_generation_id_refuses_an_id_that_is_not_a_digest(tmp_path):
+    _synthetic_candidates(tmp_path)
+    assert P.generation_id(tmp_path) == DVID
+    path = tmp_path / "axis_results.csv"
+    path.write_text(path.read_text().replace(DVID, "x' OR '1'='1"))
+    with pytest.raises(RuntimeError, match="not a hex digest"):
+        P.generation_id(tmp_path)

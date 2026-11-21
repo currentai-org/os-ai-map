@@ -24,10 +24,25 @@ The cadence keeps the trace current. Without it the tables drifted 289 commits a
 behind the corpus, so an agreement figure read off them described a corpus that no longer
 existed.
 
-It does not, by itself, satisfy Phase 7. `axis_results` holds one `source_git_sha` after any
-publish — the static model replaces in place (#412) — and the workflow does not persist the
-publisher's archive, so generations accumulate nowhere and "agreement across releases" stays
-unobservable however often this runs. #384 carries the options.
+Each publish also **appends one generation** to the three tables: the rows carrying that
+publish's `declaration_version_id`. The tables therefore hold the trace of every commit they were
+published from, which is what makes "agreement across releases" observable. Read it with:
+
+```bash
+uv run python -m build.trace_generations
+```
+
+The report lists each generation oldest first, with its row count, how many rows reproduce the
+recorded score, and every row that is not scored. A generation is **complete** when every row is
+scored, every scored row reproduces, and its commit is in this repository's history. Ruling
+R-2026-11-08-t (`docs/rulings/log.yaml`) accepts four complete generations as the agreement Phase 7
+needs, and asks for each unscored row to be reconciled or adjudicated, not waved through. Reaching
+that count does not retire anything: dropping `scores.openness_facts` and
+`scores.openness_computed` keeps its own authorization (#384).
+
+A reader that wants one evaluation selects a `declaration_version_id`. The rows carry no timestamp,
+because the trace is a deterministic function of the declarations, so "newest" is the generation
+whose `source_git_sha` is the latest commit, which the report resolves from git.
 
 "Only a maintainer materializes them" still holds and is about editor sessions: the workflow
 carries the maintainer's `OSO_API_KEY` and `OSO_ORG_ID` as repository secrets, the same way
@@ -71,15 +86,25 @@ before publishing, never something to deploy around.
 The three tables are static models in the `evaluation` dataset, published by the dedicated
 `build/publish_scoring_trace.py` — a mirror of `build/publish_evaluation.py` (same
 validate-before-mutation, the shared run-group-bound `poll_run_group`, deployed-schema read-back,
-and SUCCESS-gated immutable archive), so the two publishers cannot drift. They are **not** wired
-into any automatic table set, precisely because they are cut at a commit rather than on every merge;
-a maintainer publishes them explicitly.
+and SUCCESS-gated immutable archive), so the two publishers cannot drift. They are **not** part of
+the registry publish that runs on every merge, because they are cut at a commit on their own
+cadence (§0).
 
 ```bash
 uv run python -m build.publish_scoring_trace --plan       # validate + plan; offline, no creds, NO write
 uv run python -m build.publish_scoring_trace --dry-run    # validate + read-only id resolution; NO mutation, NO write
-uv run python -m build.publish_scoring_trace              # validate, upload, run, then archive
+uv run python -m build.publish_scoring_trace              # validate, append the generation, then archive
 ```
+
+Before uploading, the publisher reads which generations each table already holds. A table that
+holds this generation at the candidate's row count is skipped, so running the publish twice, or
+resuming one that failed part way, appends nothing twice. A table that holds the generation at a
+different row count stops the publish: that is a partial or foreign load to investigate by hand.
+When all three tables already hold the generation there is nothing to do, and the publish exits 0.
+
+`--replace` overwrites the three tables with the candidate and **discards every generation they
+hold**, which restarts the count toward Phase 7. It is for repairing a table whose contents can no
+longer be trusted, and nothing schedules it.
 
 `--plan` and `--dry-run` write nothing. A real publish resolves the `evaluation` dataset and each
 static model, `PUT`s the CSV, and requests the load run **per static model** (`datasetId` +
@@ -90,10 +115,10 @@ exact headers against the builder's `COLUMNS`, non-empty tables, `declaration_ve
 `source_git_sha` constant within each file and equal across all three, each table unique on its
 grain, and — the ADR-001 dual-run gate — **every scored `axis_results` row reproduces the recorded
 score** (a scored row that does not is a `check_rubric` disagreement, refused here, never deployed).
-It then reads the deployed row count/schema back via `pyoso` and, only when every run group reached
-`SUCCESS` and the deployed data matches, records the deployment. The artifact is **content-addressed**
+It then reads the row count and schema of the generation it appended back via `pyoso` and, only
+when every run group reached `SUCCESS` and the deployed data matches, records the deployment. The artifact is **content-addressed**
 under `build/evaluation/scoring-trace-deployments/artifacts/<artifact_id>/` (the three CSVs + a
-receipt + `SHA256SUMS`), written once; the append-only occurrence log there decides what is live.
+receipt + `SHA256SUMS`), written once; the append-only occurrence log there records each publish.
 `artifact_id` is the SHA-256 of the file manifest (so a regenerated byte-set is a distinct artifact);
 `deployment_id` is the declaration identity. The candidate bytes are persisted **before** any
 create-capable platform call, and the occurrence is recorded only **after** the deployed state
@@ -118,7 +143,9 @@ uv run python -m build.release_persistence record-occurrence --publisher scoring
 ```
 
 The three modes `--stage-artifact`, `--deploy-artifact`, and `--rollback` are mutually exclusive, and
-`--stage-artifact` (which writes) cannot ride `--dry-run`/`--plan`. `--deploy-artifact <artifact_id>`
+`--stage-artifact` (which writes) cannot ride `--dry-run`/`--plan`. `--deploy-artifact` appends, like
+a normal publish. `--rollback` overwrites the tables with one archived generation, so it runs only
+with `--replace` beside it. `--deploy-artifact <artifact_id>`
 deploys the EXACT staged/Released bytes — verified against their recorded hashes — so the OSO publish is
 **bound to the released artifact**, not to whatever `build/evaluation/` holds when the deploy runs.
 `persist` packages the CSV bundle + `receipt.json` + `SHA256SUMS` (running the provenance gate first),
