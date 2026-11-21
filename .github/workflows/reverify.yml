@@ -1,8 +1,11 @@
 # Deterministic rolling re-verification (Phase 0 form). Re-fetches the digested openness
-# sources of the oldest N products and stamps a date only where every recorded dimension
-# came back byte-identical. Opens one PR per run. Drift and transient results go in the
-# report attached to the PR for the agent leg; this workflow never edits an axis whose
-# evidence changed. See build/reverify.py and docs/reference/evidence-and-freshness.md.
+# sources of the oldest N products and stamps a date only where every recorded dimension's
+# source still supports the recorded claim: the body is unchanged, or it changed and the cited
+# extract or license id was confirmed in the fresh body, in which case the new digest is
+# recorded. Opens one PR per run, whose description counts the three outcomes apart
+# (unchanged, changed with the claim verified, unresolved). An axis with an unresolved source
+# is never edited; those go to the agent leg. See build/reverify.py and
+# docs/reference/evidence-and-freshness.md.
 name: reverify
 on:
   schedule:
@@ -52,20 +55,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add sources/scores/
-          git commit -m "chore(freshness): re-verify $(git diff --cached --name-only | wc -l | tr -d ' ') products, openness re-dated where evidence was unchanged"
+          git commit -m "chore(freshness): re-verify $(git diff --cached --name-only | wc -l | tr -d ' ') products, openness re-dated where the cited evidence was confirmed"
           git push -u origin "$BRANCH"
-          {
-            echo "Deterministic re-verification of the oldest products. Openness dates were stamped only where every recorded dimension's digested source came back byte-identical."
-            echo
-            echo '```'
-            uv run python - <<'PY'
-          import json
-          r = json.load(open("reverify-report.json"))
-          for p in r["products"]:
-              print(f'{p["slug"]:32} stamped={p["stamped"]} drifted={len(p["drifted"])} transient={len(p["transient"])} skipped={len(p["skipped"])}')
-          PY
-            echo '```'
-            echo
-            echo "Drifted and transient axes need the agent leg (refresh-category, scoped to these products)."
-          } > pr-body.md
+          uv run python -m build.reverify --summarize reverify-report.json > pr-body.md
           gh pr create --title "chore(freshness): rolling re-verification $(date -u +%F)" --body-file pr-body.md --label freshness

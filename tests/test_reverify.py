@@ -742,3 +742,66 @@ def test_adoption_cannot_be_re_dated_by_a_re_fetch_on_any_route(tmp_path):
     with pytest.raises(ValueError, match="limited to openness"):
         reverify.apply(tmp_path, "p", result, date(2026, 9, 12))
     assert (scores / "p.yaml").read_text() == before
+
+
+# --- the three outcomes a source can have, kept apart in the report and the PR description ---------
+
+
+def test_an_unchanged_source_and_a_verified_one_are_recorded_apart(tmp_path):
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"], shows="Apache License, Version 2.0"),
+        _src("https://a/README", "b" * 64, ["source"]),
+    ], recipe=_SOURCE_RECIPE)
+    body = tmp_path / "LICENSE.body"
+    body.write_text("Apache License, Version 2.0, with a new footer")
+
+    def fake(url, **kw):
+        if url.endswith("LICENSE"):
+            return {"url": url, "http_status": 200, "content_sha256": "c" * 64, "body_path": str(body)}
+        return {"url": url, "http_status": 200, "content_sha256": "b" * 64}
+
+    result = reverify.reverify_product(root, "p", date(2026, 9, 3), axes=("openness",), fetch=fake)
+    assert result.stamped == ["openness"]
+    assert result.unchanged == [("openness", "https://a/README")]
+    assert result.reconfirmed_by_shows == [("openness", "https://a/LICENSE")]
+
+
+def _report_product(**kw):
+    base = {"slug": "p", "stamped": [], "drifted": [], "refuted": [], "transient": [], "skipped": [],
+            "unchanged": [], "reconfirmed_by_shows": [], "reconfirmed_by_spdx": []}
+    return {**base, **kw}
+
+
+def test_outcome_counts_separate_what_was_re_dated_from_what_was_only_read():
+    stamped = _report_product(stamped=["openness"], unchanged=[["openness", "u1"]],
+                              reconfirmed_by_shows=[["openness", "u2"]], reconfirmed_by_spdx=[["openness", "u3"]])
+    assert reverify.outcome_counts(stamped) == {
+        "unchanged": 1, "verified": 2, "unresolved": 0, "redated_unchanged": 1, "redated_verified": 2}
+    held = _report_product(unchanged=[["openness", "u1"]], reconfirmed_by_shows=[["openness", "u2"]],
+                           drifted=[["openness", "u3"]], transient=[["openness", "u4"]],
+                           refuted=[["openness", "u5", "MIT", "GPL-3.0"]])
+    assert reverify.outcome_counts(held) == {
+        "unchanged": 1, "verified": 1, "unresolved": 3, "redated_unchanged": 0, "redated_verified": 0}
+
+
+def test_the_summary_never_calls_a_changed_source_unchanged():
+    report = {"products": [
+        _report_product(slug="a", stamped=["openness"], unchanged=[["openness", "u1"]],
+                        reconfirmed_by_shows=[["openness", "u2"]]),
+        _report_product(slug="b", drifted=[["openness", "u3"]], unchanged=[["openness", "u4"]]),
+    ]}
+    text = reverify.summary_markdown(report)
+    assert "1 product(s) re-dated, on 2 source(s)" in text
+    assert "**1 unchanged.**" in text and "**1 changed, claim verified.**" in text
+    assert "**1 source(s) unresolved**" in text
+    assert "A further 1 unchanged and 0 verified source(s)" in text
+    assert "byte-identical" not in text
+    assert "a" + " " * 31 + " stamped=['openness'] unchanged=1 verified=1 drifted=0" in text
+
+
+def test_summarize_prints_a_saved_report_and_fetches_nothing(tmp_path, capsys):
+    saved = tmp_path / "report.json"
+    saved.write_text(json.dumps({"products": [_report_product(slug="a", stamped=["openness"],
+                                                              unchanged=[["openness", "u1"]])]}))
+    assert reverify.main(["--summarize", str(saved)], root=tmp_path) == 0
+    assert "1 product(s) re-dated, on 1 source(s)" in capsys.readouterr().out

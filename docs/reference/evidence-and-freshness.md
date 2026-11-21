@@ -607,6 +607,15 @@ for; the new digest is recorded so the next re-check compares against what was a
 read. It never derives a date, never records a transient fetch, and never touches an axis
 whose evidence changed.
 
+A changed digest therefore does not invalidate evidence whose cited extract is still present,
+and it is never reported as an unchanged source. The run's report and the description of the
+pull request it opens count three outcomes apart: the source is **unchanged** (same digest);
+the source **changed and the claim was verified** in the fresh body, with the new digest
+recorded; and the source is **unresolved**, where the body differs and the claim could not be
+confirmed, a license endpoint reports a different license than the record, or the fetch was
+transient
+(`build.reverify --summarize`, ruling R-2026-11-21-b).
+
 **What "the `shows` still checks out" means, and why it is not the whole sentence.** A
 `shows` is only occasionally an excerpt. Far more often it is a curator's sentence *about*
 the page with the verbatim material quoted inside it — *repo page carries the label "Public

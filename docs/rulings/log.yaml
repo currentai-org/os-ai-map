@@ -4900,3 +4900,157 @@ rulings:
     executor: agent
     lands_in: [docs/workflows/discover-candidates.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1106']
+
+  - id: R-2026-11-21-a
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: ["#384", "#1112", atlas-data, redpajama-data-v2]
+    question: >-
+      R-2026-11-08-t asks for each remaining difference in a scoring-trace generation to be
+      reconciled or adjudicated. Do declared scoring deferrals count as adjudicated, so that a
+      generation complete apart from them counts toward Phase 7?
+    ruling: >-
+      No blanket approval. Declared deferrals remain distinct from adjudicated deferrals. They count
+      toward Phase 7 only when a ruling expressly resolves their treatment. Merely documenting a
+      deferral does not qualify it. For atlas-data and redpajama-data-v2, individual dispositions
+      are required.
+    status: in-force
+    executor: agent
+    lands_in: [docs/operations/deploy-scoring-trace.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1112']
+
+  - id: R-2026-11-21-b
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: ["#445", "#1111"]
+    question: >-
+      A cited source returns a different digest than the one recorded, and the cited extract is
+      still present in the fresh body. May the evidence be re-dated, and how is that reported?
+    ruling: >-
+      Yes, conditionally. A changed digest does not invalidate evidence whose cited extract is still
+      verifiably present. Re-date only after fetching the current source, confirming the claim and
+      recording the new digest. Report three outcomes distinctly: unchanged source, changed source
+      with verified claim, and unresolved source drift. Saying all sources returned byte-identical
+      when some digests changed is inaccurate.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/evidence-and-freshness.md]
+    applied_in: []
+
+  - id: R-2026-11-21-c
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: [ADR-004]
+    question: >-
+      May an LLM suggest the category of a newly discovered candidate?
+    ruling: >-
+      Yes. An LLM may suggest a category under ADR-004. Treat that as a proposal, not an
+      authoritative classification. Deterministic validation and human approval remain required.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-d
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: [ADR-004]
+    question: >-
+      May a quantization of a model the map already holds be resolved to that model by rule,
+      without a person or an LLM judging it?
+    ruling: >-
+      Conditionally. A quantization of an existing model may resolve to that model by rule when
+      provenance and model identity are established. A tag alone is insufficient; materially
+      distinct releases require separate consideration.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-e
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: [ADR-004]
+    question: >-
+      What may agents running on a schedule do to the map on their own authority, and in what
+      order is the automation built?
+    ruling: >-
+      Agents may discover, ingest, reconcile, classify provisionally, generate evidence packets, and
+      open PRs. They should not independently introduce methodology, override rulings, resolve
+      contested licenses, authorize published stage moves, or merge consequential changes. Keep
+      production write authority and methodological rulings firmly under human control. Implement
+      the bridge and deterministic reconciliation before the steward agent.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-f
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: [ADR-004]
+    question: >-
+      How do changes proposed on the platform reach sources/: a daily scheduled bridge that opens
+      pull requests, or webhooks that fire as proposals appear?
+    ruling: >-
+      Start with a daily scheduled bridge. Keep proposed source changes in PRs, with normal
+      validation and human review. Add webhooks when the scheduled path is reliable.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-g
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: ["#918"]
+    question: >-
+      May the observation-history models be created as production datasets with weekly schedules
+      now that versioning is on?
+    ruling: >-
+      Not yet. Build and validate history models in an isolated environment first. Approve
+      production datasets and weekly schedules only after their schemas, costs, and recovery
+      procedures are reviewed. Delete the scratch dataset after verification; don't retain an
+      unmanaged production scratch dataset indefinitely.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-h
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: [ADR-004]
+    question: >-
+      What may a scheduled steward agent spend?
+    ruling: >-
+      Limited pilot. Start with a provisional budget of 10 credits per run and 50 per week. Stop on
+      budget exhaustion, record actual consumption, and revise after representative runs.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-21-i
+    date: 2026-11-21
+    by: ccerv1
+    venue: session
+    refs: ["#918"]
+    question: >-
+      May an agent commit a dataset release on the platform once its check passes?
+    ruling: >-
+      Authorize narrowly. Commit only the exact reviewed candidate, after rechecking its live status
+      and blockers. Do not grant general release permissions. Fix the deployment tooling to use the
+      versioned release API and enforce the forwards-only ruling.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
