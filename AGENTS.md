@@ -133,6 +133,10 @@ Shared helpers     vocabulary (the one owner of any vocabulary two modules need)
 
 Proposers          propose_arxiv, propose_artifacts.
 
+Releases           release_dataset stages, prints and commits a dataset release on the versioned
+                   platform (maintainer-only). It sends history models forwards-only and commits
+                   only the candidate id and digest it is handed.
+
 Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it applies the
                    inclusion principle in docs/architecture/adr-005-closed-product-inclusion.md,
                    which is guidance and not a gate. Never wire one into preflight or CI.

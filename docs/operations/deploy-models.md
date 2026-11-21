@@ -22,29 +22,56 @@ and `mirror.synced_at`, or the dependency gate fails on the hash. That gate only
 matches its own contract; "Mirror resync" below covers the weekly check that the contract still
 matches the platform, and what to do when it does not.
 
-## The deploy mechanic: revision → RELEASE → run
+## The deploy mechanic: revision → stage → commit → run
 
-For any model whose SQL changed:
+The organization is versioned, so a model is released as part of a **dataset release**. The
+one-model `createDataModelRelease` is refused there (`dataset-release-required`).
+`build/release_dataset.py` carries steps 2 and 3. For any model whose code changed:
 
-1. **Revision** — `createDataModelRevision` with the dataset and the new SQL.
-2. **Release** — `createDataModelRelease` pointing at that revision. **This is the step that
-   gets forgotten.** A run without it executes the *previous* release, and the symptom is "my
-   change had no effect" rather than an error — three runs were once spent concluding a column
-   drop had broken materialization when the new SQL had simply never been released. **No automated
-   revision-versus-release assertion exists yet** (that latest-revision == latest-release check was
-   scoped but never landed), so maintainers must verify by hand that the revision they just created
-   is the one that got released before trusting a run.
-3. **Run** — `createUserModelRunRequest` with the dataset ID.
-4. **Prove it** — read the output table back and, for the scoring chain, run
+1. **Revision** — `createDataModelRevision` with the dataset and the new code.
+2. **Stage** — open or update the dataset's pending candidate and wait for the platform's check:
+
+   ```bash
+   uv run python -m build.release_dataset stage scores --model openness_facts --model openness_computed
+   ```
+
+   It prints the candidate: each model and revision, the check result, the commit blockers, a
+   digest of what the candidate releases, and the command that commits exactly that. Staging
+   releases nothing. `status <dataset>` prints the same without staging.
+3. **Commit** — a maintainer reads the candidate and runs the printed command:
+
+   ```bash
+   uv run python -m build.release_dataset commit scores --candidate <id> --digest <sha256>
+   ```
+
+   The commit is refused unless that candidate is still the dataset's pending one, still releases
+   the same revisions, passed its latest check and has no blocker. A release cannot be withdrawn,
+   so this step is run by a person on values they read, never by a schedule, and an agent commits
+   only the exact candidate a maintainer authorized (ruling R-2026-11-21-i). **This is the step
+   that gets forgotten.** A run without it executes the *previous* release, and the symptom is "my
+   change had no effect" and not an error.
+4. **Run** — `createUserModelRunRequest` with the dataset ID.
+5. **Prove it** — read the output table back and, for the scoring chain, run
    `build/check_parity.py`.
 
-For the scoring chain the script wraps steps 1–3:
+**History is released forwards-only** (ruling R-2026-11-08-s). A model whose released kind is not
+`FULL` or `VIEW` keeps rows that no later run can rebuild, because the sources behind a history
+table report only their current state. `stage` sends `forwardsOnly` for every such model and has
+no flag that turns it off. It refuses a revision that changes the model's kind, its unique key or
+its time column, since the platform can only apply those by rebuilding the table from its start,
+and the platform refuses a removed or retyped column for the same reason. A column the revision
+adds is declared with `--added-column MODEL.COLUMN[=VALUE]`, the value being what rows already
+stored take. An unchanged model is re-locked against its upstreams with `--refresh NAME`, which is
+refused for a model that keeps history.
 
-```bash
-# from currentai-org/ (NOT this repo — see the table above)
-uv run python tools/deploy_udm.py --dataset scores --model openness_facts \
-    --sql udms/scores_openness_facts.sql
-```
+Staging runs the whole dataset check inside the platform's API process. For `language_live` (35
+models) and `ai_ddos` (28), `stageDatasetRelease` returns `timeout exceeded when trying to
+connect` every time, while datasets of ten models or fewer stage. That is a platform limit to
+raise with the platform's maintainers, and retrying from here does not get past it.
+
+`tools/deploy_udm.py` in `currentai-org/` wraps the revision, the one-model release and the run
+for the scoring chain. Its release step is the call a versioned organization refuses, so release
+with the tool above.
 
 ## The refresh order, which is not optional
 
