@@ -54,6 +54,11 @@ check, and has no commit blocker.
 
 A release is the platform's record and cannot be withdrawn, which is why `commit` is a separate
 command that a person runs with values they read.
+
+A commit can outlast the call that asked for it. When the call times out or the connection drops,
+`commit` exits 3 and says to read `status` before anything else: the candidate reads `COMMITTED`
+once the platform finishes, and running `commit` again in between is refused by the checks above
+only if the first one has already landed.
 """
 
 from __future__ import annotations
@@ -74,6 +79,9 @@ RECOMPUTED_KINDS = frozenset({"FULL", "VIEW"})
 # Kind options that decide which stored row a new row replaces. Changing one recomputes the model.
 ROW_KEY_OPTIONS = ("uniqueKeyColumns", "timeColumn", "partitionGrain")
 CHECK_DONE = frozenset({"SUCCESS", "FAILED", "CANCELED"})
+# A commit runs the dataset check once more before it releases. For an 18-model dataset that took
+# longer than the 60 seconds a read is given, and the commit completed after the client gave up.
+MUTATION_TIMEOUT = 600.0
 # Where `stage` writes what it sent. Git-ignored: a record is evidence for one commit, not source.
 RECORDS_DIR = Path(__file__).resolve().parent / "release-records"
 
@@ -394,7 +402,7 @@ class Platform:
         return edges[0]["node"] if edges else None
 
     def mutate(self, mutation: str, field: str, payload: dict) -> dict:
-        result = self.call(mutation, {"input": payload}, self.token)[field]
+        result = self.call(mutation, {"input": payload}, self.token, timeout=MUTATION_TIMEOUT)[field]
         if not result["success"]:
             raise RuntimeError(f"{field} was refused: {result.get('message')}")
         return result
@@ -517,7 +525,15 @@ def main(argv: list[str] | None = None, platform=None) -> int:
         for problem in problems:
             print(f"  ! {problem}", file=sys.stderr)
         return 2
-    result = platform.mutate(M_COMMIT, "commitDatasetRelease", {"candidateId": args.candidate})
+    try:
+        result = platform.mutate(M_COMMIT, "commitDatasetRelease", {"candidateId": args.candidate})
+    except OSError as exc:
+        # A timeout or a dropped connection says nothing about the commit, which the platform may
+        # still complete. Committing again blind is the one thing not to do.
+        print(f"the commit call did not return ({type(exc).__name__}: {exc}). It may still complete on the "
+              f"platform. Do not run commit again yet: run `status {args.dataset}` until the candidate reads "
+              "COMMITTED, or is still OPEN after several minutes.", file=sys.stderr)
+        return 3
     release = result.get("release") or {}
     print(f"{args.dataset}: committed candidate {args.candidate} as release {release.get('id')}")
     return 0

@@ -59,7 +59,7 @@ USER_AGENT = "os-ai-map-registry-publisher/1.0"
 DEFAULT_DATASET = "registry"
 
 
-def graphql(query: str, variables: dict, token: str) -> dict:
+def graphql(query: str, variables: dict, token: str, timeout: float = 60.0) -> dict:
     request = urllib.request.Request(
         API,
         data=json.dumps({"query": query, "variables": variables}).encode(),
@@ -71,7 +71,7 @@ def graphql(query: str, variables: dict, token: str) -> dict:
         },
     )
     try:
-        with urllib.request.urlopen(request, timeout=60) as response:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             body = json.load(response)
     except urllib.error.HTTPError as error:
         # A malformed query is a GraphQL VALIDATION error served with a 4xx, and the reason is

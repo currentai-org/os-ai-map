@@ -52,6 +52,10 @@ one-model `createDataModelRelease` is refused there (`dataset-release-required`)
    exact candidate a maintainer authorized (ruling R-2026-11-21-i). **This is the step that gets
    forgotten.** A run without it executes the *previous* release, and the symptom is "my change
    had no effect" and not an error.
+   A commit runs the dataset check again and can take minutes on a larger dataset. If the call
+   times out, `commit` exits 3 without retrying. Run `status <dataset>` until the candidate reads
+   `COMMITTED`; do not commit again while it is unclear. On 2026-11-22 an 18-model commit
+   completed on the platform after the client had given up at 60 seconds.
 4. **Run** — `createUserModelRunRequest` with the dataset ID.
 5. **Prove it** — read the output table back and, for the scoring chain, run
    `build/check_parity.py`.

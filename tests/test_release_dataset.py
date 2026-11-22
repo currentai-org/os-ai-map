@@ -363,3 +363,27 @@ def test_wait_for_check_polls_until_the_check_finishes():
     slept = []
     done = R.wait_for_check(Polled([]), "ds-1", sleep=slept.append)
     assert done["latestCheck"]["status"] == "SUCCESS" and slept == [15.0, 15.0]
+
+
+def test_a_commit_call_that_does_not_return_is_not_reported_as_a_failure_to_retry(capsys):
+    pending = _candidate()
+
+    class Slow(FakePlatform):
+        def mutate(self, mutation, field, payload):
+            raise TimeoutError("The read operation timed out")
+
+    code = R.main(["commit", "obs", "--candidate", "c1", "--digest", R.candidate_digest(pending)], platform=Slow([], pending))
+    err = capsys.readouterr().err
+    assert code == 3
+    assert "may still complete" in err and "Do not run commit again yet" in err and "status obs" in err
+
+
+def test_platform_mutations_are_given_longer_than_a_read():
+    seen = {}
+
+    def call(query, variables, token, timeout=60.0):
+        seen["timeout"] = timeout
+        return {"commitDatasetRelease": {"success": True, "release": {"id": "rel-1"}}}
+
+    R.Platform("t", "o", call=call).mutate(R.M_COMMIT, "commitDatasetRelease", {"candidateId": "c1"})
+    assert seen["timeout"] == R.MUTATION_TIMEOUT > 60
