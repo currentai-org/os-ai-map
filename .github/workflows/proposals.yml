@@ -3,8 +3,9 @@
 # labeled per ADR-004. A proposal is a request: the applier re-derives every change from its own
 # fetch, so nothing a producer wrote is copied into sources/. Only a person merges.
 #
-# Switched on by the repository variable PROPOSALS_TABLE (org.dataset.table). Until it is set the
-# job is skipped, so the schedule costs nothing. See docs/operations/proposals-bridge.md.
+# Reads currentai.proposals.proposals (contract in warehouse/dependencies.yaml). Switched on by the
+# repository variable PROPOSALS_BRIDGE=on; until then the job is skipped, so the schedule costs
+# nothing. See docs/operations/proposals-bridge.md.
 name: proposals
 on:
   schedule:
@@ -19,7 +20,7 @@ permissions:
   pull-requests: write
 jobs:
   bridge:
-    if: ${{ vars.PROPOSALS_TABLE != '' }}
+    if: ${{ vars.PROPOSALS_BRIDGE == 'on' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -42,8 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           uv run python -m build.proposals apply --kind "${{ matrix.kind }}" \
-            --from-table "${{ vars.PROPOSALS_TABLE }}" --since-days "${{ inputs.since_days || 7 }}" \
-            --report proposals-report.json --pace 1
+            --since-days "${{ inputs.since_days || 7 }}" --report proposals-report.json --pace 1
       - name: Keep the report whatever happens next
         if: always()
         uses: actions/upload-artifact@v4

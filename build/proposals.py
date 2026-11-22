@@ -27,8 +27,7 @@ Every proposal ends in exactly one outcome, and the report counts them apart:
                      the handler refuses
 
 Usage:
-    uv run python -m build.proposals apply --kind redate --from-table currentai.proposals.redate \\
-        --report proposals-report.json
+    uv run python -m build.proposals apply --kind redate --report proposals-report.json
     uv run python -m build.proposals apply --kind redate --from-file proposals.jsonl --dry-run
     uv run python -m build.proposals summarize proposals-report.json   # the PR body
     uv run python -m build.proposals label redate                      # the PR's one label
@@ -56,6 +55,10 @@ from build.check_freshness import parse_date
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "docs" / "schemas" / "proposal.schema.json"
+
+#: The platform proposals table. Its contract and read-only mirror are in
+#: warehouse/dependencies.yaml and warehouse/models/proposals/proposals.sql.
+TABLE = "currentai.proposals.proposals"
 
 #: The ADR-004 label each kind's pull request carries. A kind with no label here cannot be
 #: applied: ADR-004 allows a bot PR exactly one label, from a closed list.
@@ -304,8 +307,9 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
 
     apply_p = sub.add_parser("apply", help="read proposals of one kind and apply them")
     apply_p.add_argument("--kind", required=True, choices=sorted(HANDLERS))
-    source = apply_p.add_mutually_exclusive_group(required=True)
-    source.add_argument("--from-table", metavar="ORG.DATASET.TABLE")
+    source = apply_p.add_mutually_exclusive_group()
+    source.add_argument("--from-table", metavar="ORG.DATASET.TABLE", default=TABLE,
+                        help=f"the proposals table (default {TABLE})")
     source.add_argument("--from-file", type=Path, metavar="JSONL")
     apply_p.add_argument("--since-days", type=int, default=7,
                          help="with --from-table, read rows created in the last N days (default 7)")

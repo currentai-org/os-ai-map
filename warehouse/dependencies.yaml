@@ -608,3 +608,23 @@ dependencies:
     cron: 41 3 2 1,4,7,10 *
     timezone: UTC
     last_observed_trigger: MANUAL
+- table: currentai.proposals.proposals
+  purpose: platform_proposals_for_the_bridge
+  expected_grain: one row per proposal_id (one UNION ALL branch per producer; empty until the first producer exists)
+  freshness_requirement: none of its own; as fresh as its producers (no producer yet)
+  required_by:
+  - build/proposals.py
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/proposals/proposals.sql
+  mirror:
+    model_id: 03f0521e-c811-4a73-b084-c6b95fb759dd
+    revision: 3
+    hash: PENDING_PLATFORM_HASH
+    local_sha256: 31cb86271279db0d7532dd1eb5528891541663a422bfe3c8569c4041be36de56
+    synced_at: '2026-11-22'
+  platform_schedule:
+    cron: null
+    timezone: UTC
+    last_observed_trigger: MANUAL

@@ -47,19 +47,14 @@ two of its fields flat, because nested columns are awkward to write from a SQL m
 | `evidence` | varchar | JSON array of `{url, outcome, content_sha256?}`, `outcome` one of `unchanged`, `verified` |
 | `created_at` | timestamp | The bridge reads rows created in the last seven days |
 
-The table is a SQL model over its producers, one `UNION ALL` branch per producer, each emitting the
-columns above. Producers are added as they are built; the first is the source-observation model of
-build step 4. With none yet, the model is the empty select:
-
-```sql
-SELECT
-  CAST(NULL AS varchar) AS proposal_id, CAST(NULL AS varchar) AS kind,
-  CAST(NULL AS varchar) AS product_slug, CAST(NULL AS varchar) AS axis,
-  CAST(NULL AS date) AS observed_at, CAST(NULL AS varchar) AS producer_model,
-  CAST(NULL AS varchar) AS producer_revision, CAST(NULL AS varchar) AS evidence,
-  CAST(NULL AS timestamp) AS created_at
-WHERE false
-```
+The table is `currentai.proposals.proposals`, a SQL model over its producers, one `UNION ALL`
+branch per producer, each emitting the columns above. Producers are added as they are built; the
+first is the source-observation model of build step 4. Until then it is an empty select. Its
+read-only mirror is `warehouse/models/proposals/proposals.sql`, and its contract, with the revision
+the repository reviewed, is in `warehouse/dependencies.yaml`. Adding a producer is a platform
+revision, so it is a mirror resync in the same pull request (`docs/operations/deploy-models.md`).
+`created_at` is stored as `timestamp(6)`; the bridge reads it as text, so the precision does not
+matter to it.
 
 Keep it in its own dataset, apart from the history models.
 
@@ -77,14 +72,9 @@ a seven-day window and derives what was already applied from `sources/`.
 
 ## Switching it on
 
-1. Create the dataset and the model above on the platform, and confirm it returns zero rows with
-   the expected columns.
-2. Record it in `warehouse/dependencies.yaml` as a dependency contract read by `build/proposals.py`
-   (`skills/add-data-source/SKILL.md`). It is a platform output the repository reads, not a
-   governed asset.
-3. Set the repository variable `PROPOSALS_TABLE` to its three-part name. The workflow is skipped
-   while the variable is unset, so the daily schedule costs nothing until then.
-4. Dispatch the workflow once by hand and confirm it exits cleanly with nothing to apply.
+1. Set the repository variable `PROPOSALS_BRIDGE` to `on`. The workflow is skipped otherwise, so
+   the daily schedule costs nothing until then, and setting it back to anything else stops it.
+2. Dispatch the workflow once by hand and confirm it exits cleanly with nothing to apply.
 
 The workflow needs no new credential. It reads the table with `OSO_API_KEY` and opens the pull
 request with `GH_FETCH_TOKEN`, as `reverify` does, so CI runs on it.
@@ -92,7 +82,7 @@ request with `GH_FETCH_TOKEN`, as `reverify` does, so CI runs on it.
 ## Running it by hand
 
 ```bash
-uv run python -m build.proposals apply --kind redate --from-table "$PROPOSALS_TABLE" --report r.json --dry-run
+uv run python -m build.proposals apply --kind redate --report r.json --dry-run
 uv run python -m build.proposals apply --kind redate --from-file proposals.jsonl --report r.json
 uv run python -m build.proposals summarize r.json
 ```

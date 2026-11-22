@@ -60,6 +60,7 @@ AUDIT_ROOTS = (
     "build/snapshot_counters.py",  # records the lifetime counters adoption increments come from
     "build/language_representation.py",  # checks the language classification contract
     "build/language_codes.py",  # confirms the map's language codes against the classification
+    "build/proposals.py",  # applies platform proposals to sources/ through the repo's own tooling
 )
 
 # Explicitly declared publication workflows that read tables directly (none today). The root
