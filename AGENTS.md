@@ -133,6 +133,11 @@ Shared helpers     vocabulary (the one owner of any vocabulary two modules need)
 
 Proposers          propose_arxiv, propose_artifacts.
 
+Bridge             proposals. Reads the platform proposals table, applies each kind with the
+                   repo's own tooling (a `redate` proposal is re-read by reverify, never copied),
+                   and writes the report the daily `proposals` workflow turns into one rolling,
+                   labeled PR per kind. docs/operations/proposals-bridge.md.
+
 Releases           release_dataset stages, prints and commits a dataset release on the versioned
                    platform (maintainer-only). It sends history models forwards-only and commits
                    only the candidate id and digest it is handed.
@@ -384,6 +389,8 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 - `docs/operations/deploy-models.md`: revise, release, and run the warehouse models — and the
   truth about the scoring-chain schedule (declared but not firing; recompute is manual).
 - `docs/operations/refresh-data.md`: load a fetched CSV as a static model, and why the catalog fetchers and the weekly `refresh-data` workflow that ran them are gone.
+- `docs/operations/proposals-bridge.md`: switch on and run the daily bridge that turns platform
+  proposals into labeled pull requests.
 - `docs/operations/publish-map.md`: serialize, render, upload, and publish the live notebook to
   `/currentai/ai-stack-map` (id `7b29bf47`).
 - `docs/operations/artifact-state-rename.md`: the Phase 2 coordinated rename of the source

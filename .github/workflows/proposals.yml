@@ -1,0 +1,89 @@
+# The proposals bridge (ruling R-2026-11-21-f). Reads the platform proposals table daily, applies
+# each kind with build/proposals.py, gates the result, and keeps one rolling pull request per kind,
+# labeled per ADR-004. A proposal is a request: the applier re-derives every change from its own
+# fetch, so nothing a producer wrote is copied into sources/. Only a person merges.
+#
+# Switched on by the repository variable PROPOSALS_TABLE (org.dataset.table). Until it is set the
+# job is skipped, so the schedule costs nothing. See docs/operations/proposals-bridge.md.
+name: proposals
+on:
+  schedule:
+    - cron: "40 11 * * *"     # daily, after the morning platform runs and clear of reverify (Tue 10:00)
+  workflow_dispatch:
+    inputs:
+      since_days:
+        description: "Read proposals created in the last N days"
+        default: "7"
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  bridge:
+    if: ${{ vars.PROPOSALS_TABLE != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [redate]
+    concurrency:
+      group: proposals-${{ matrix.kind }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Apply the proposals
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          uv run python -m build.proposals apply --kind "${{ matrix.kind }}" \
+            --from-table "${{ vars.PROPOSALS_TABLE }}" --since-days "${{ inputs.since_days || 7 }}" \
+            --report proposals-report.json --pace 1
+      - name: Keep the report whatever happens next
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposals-${{ matrix.kind }}
+          path: proposals-report.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Gates on the result
+        # preflight runs what CI's validate workflow runs; check_redate asks every moved date for
+        # the reading behind it. A run that fails here opens no pull request.
+        run: |
+          uv run python -m build.preflight --skip-tests
+          uv run python -m build.check_redate --base origin/main
+      - name: Update the one rolling pull request for this kind
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        # One branch per kind, rebuilt from main on every run, so the pull request always holds
+        # today's reading and an unmerged one is replaced rather than stacked. A day with nothing
+        # to apply leaves an open pull request as it is.
+        run: |
+          if [ -z "$(git status --porcelain sources/)" ]; then
+            echo "Nothing applied; leaving any open pull request as it is."
+            exit 0
+          fi
+          KIND="${{ matrix.kind }}"
+          BRANCH="proposals/$KIND"
+          LABEL="$(uv run python -m build.proposals label "$KIND")"
+          uv run python -m build.proposals summarize proposals-report.json > pr-body.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add sources/
+          git commit -m "chore(proposals): apply $KIND proposals $(date -u +%F)"
+          git push --force origin "$BRANCH"
+          OPEN="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')"
+          if [ -n "$OPEN" ]; then
+            gh pr edit "$OPEN" --body-file pr-body.md
+            echo "Updated pull request #$OPEN."
+          else
+            gh pr create --head "$BRANCH" --title "chore(proposals): $KIND proposals from the platform" \
+              --body-file pr-body.md --label "$LABEL"
+          fi

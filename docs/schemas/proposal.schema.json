@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/currentai-org/os-ai-map/docs/schemas/proposal.schema.json",
+  "title": "Proposal",
+  "description": "One row of a platform proposals table, as build.proposals reads it. A proposal asks the repository to make a change; it is never the change. The applier re-derives everything it writes with the repository's own deterministic tooling, so nothing in a proposal is copied into sources/. See docs/operations/proposals-bridge.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proposal_id", "kind", "product_slug", "axis", "observed_at", "producer", "evidence"],
+  "properties": {
+    "proposal_id": {
+      "description": "Stable id the producer assigns, unique across the table. The same observation proposed twice carries the same id, so a re-run of the producer adds nothing.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "kind": {
+      "description": "What the proposal asks for. Each kind has one handler in build/proposals.py and one ADR-004 label.",
+      "enum": ["redate"]
+    },
+    "product_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "axis": {
+      "description": "The axis the proposal concerns. A redate proposal is limited to openness by the same refusal build.reverify applies.",
+      "enum": ["openness", "adoption", "capability"]
+    },
+    "observed_at": {
+      "description": "The day the producer made the observation. A redate proposal whose axis is already verified on or after this day is current and is skipped.",
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "producer": {
+      "description": "Which platform model or rule produced the row, so a reviewer can trace it and a bad producer can be switched off.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model"],
+      "properties": {
+        "model": {"type": "string", "minLength": 1},
+        "revision": {"type": "string"}
+      }
+    },
+    "evidence": {
+      "description": "What the producer saw, per cited source. Informational: the applier fetches every source again and decides from its own reading.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "outcome"],
+        "properties": {
+          "url": {"type": "string", "pattern": "^https?://"},
+          "outcome": {"enum": ["unchanged", "verified"]},
+          "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "created_at": {
+      "description": "When the row was written. The applier reads only rows inside its window (--since-days).",
+      "type": "string"
+    }
+  }
+}
