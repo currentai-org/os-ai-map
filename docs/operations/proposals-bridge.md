@@ -61,8 +61,19 @@ SELECT
 WHERE false
 ```
 
-Keep it in its own dataset, apart from the history models, and give it no cron of its own: it is a
-view over producers that carry their own schedules.
+Keep it in its own dataset, apart from the history models.
+
+**Schedule it after its producers.** A FULL model is materialized when it runs and does not refresh
+when its inputs change, so the table shows its producers only as of its own last run. While it has
+no producers it needs no schedule. The pull request that adds the first producer also gives this
+model a cron that fires after that producer's, and each later producer moves it after its own if
+needed.
+
+**Keep it FULL, never incremental.** History belongs in the producers, which keep their
+observations; a proposal is a conclusion recomputed from them. Rebuilt in full, the table drops a
+bad producer's rows on the next run after that producer is fixed or disabled, where an incremental
+model would keep them until someone deleted them by hand. The bridge needs no memory here: it reads
+a seven-day window and derives what was already applied from `sources/`.
 
 ## Switching it on
 
