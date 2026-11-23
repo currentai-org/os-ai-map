@@ -124,6 +124,8 @@ Two facts specific to one model each:
 
 ## What needs a decision before production
 
+Proposed answers, for review, are in [`history-and-triage-decisions.md`](history-and-triage-decisions.md).
+
 1. **Schedule:** weekly, after the last upstream sweep (Sunday 05:30 UTC) and with a day's margin,
    for example Sunday 08:00 UTC. A missed run then has six days to be re-run before data is lost.
 2. **Alerting on a missed week:** with no recovery after the next sweep, a failed run needs to reach
