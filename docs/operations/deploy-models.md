@@ -47,7 +47,8 @@ one-model `createDataModelRelease` is refused there (`dataset-release-required`)
    ```
 
    The commit is refused unless that candidate is still the dataset's newest one, is open, has the
-   same digest, passed its latest check and has no blocker. A release cannot be withdrawn, so this
+   same digest, passed its latest check, is not reported as having an out-of-date check
+   (`latestCheckOutOfDate`) and has no blocker. A release cannot be withdrawn, so this
    step is run by a person on values they read, never by a schedule, and an agent commits only the
    exact candidate a maintainer authorized (ruling R-2026-11-21-i). **This is the step that gets
    forgotten.** A run without it executes the *previous* release, and the symptom is "my change
@@ -87,7 +88,7 @@ state. What enforces it, and where:
 | A change of kind, unique key, time column or partition grain is refused | this tool | before staging |
 | `--refresh` of a history model is refused, since a re-lock cannot carry `forwardsOnly` | this tool | before staging |
 | A stored column the candidate removes or retypes is refused | this tool, comparing the released storage schema with the candidate's | after the check resolves the candidate: `stage` exits 1, `status` prints it, `commit` refuses |
-| A history model in the candidate was sent `forwardsOnly` by the stage that was checked | this tool, from the stage record | at commit: `--stage-record` is required and must name the candidate and its latest check |
+| A history model in the candidate was sent `forwardsOnly` by the stage that was checked | this tool, from the stage record | at commit: `--stage-record` is required and must name the dataset, the candidate, its latest check and the reviewed digest, and stage exactly the revisions the candidate releases |
 | An added column needs a declared default (`--added-column MODEL.COLUMN[=VALUE]`) | the platform's check | observed 2026-11-21 on a scratch dataset: the check failed without one and passed with one |
 
 Nothing in that table waits for the platform to refuse a rebuild. Its schema says `forwardsOnly`
@@ -98,7 +99,9 @@ The tool's tests run against a fake platform, so they establish what the tool re
 about the platform.
 
 A history release staged any other way (the MCP tool, the web interface) has no stage record, and
-this tool will not commit it.
+this tool will not commit it. The record is written by the maintainer's own `stage` run on their machine. It
+binds the commit to that run; it is not independent proof of what the platform received, which
+the platform does not report.
 
 ### A dataset the platform cannot stage
 
