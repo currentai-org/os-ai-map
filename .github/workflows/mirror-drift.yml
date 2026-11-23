@@ -39,8 +39,8 @@ jobs:
   mirror-drift:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - name: Install dependencies
@@ -54,7 +54,7 @@ jobs:
       - name: Keep the verdicts
         # The report is the input to a resync, so it outlives a red run's log.
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mirror-drift-report
           path: mirror-drift.json

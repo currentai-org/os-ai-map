@@ -40,13 +40,13 @@ jobs:
   parity:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: check_parity dates a lagging category from the commit that created or
           # deleted its file, and on the default shallow clone every lag reads as undatable —
           # which is treated as inside the window, so the bound would never bite.
           fetch-depth: 0
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - name: Install dependencies
