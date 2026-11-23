@@ -422,6 +422,41 @@ def test_rejected_sources_are_emitted_not_dropped():
     assert any("cite nothing specific" in w for w in warnings)
 
 
+def test_a_source_carries_its_recorded_fetch_result():
+    """A platform model that re-fetches cited sources compares against what the repo last saw.
+    The digest and status have to travel with the source row, and a source with no recorded
+    fetch must say so with a blank, not a made-up value."""
+    sources = _sources(
+        categories={"base": {"scoring_recipe": RECIPE, "products": ["m"]}},
+        scores={
+            "m": {
+                "openness": {
+                    "score": 3,
+                    "class": "open_weights",
+                    "components": "weights:open;data:closed",
+                    "sources": [
+                        {
+                            "url": "https://x.test/a",
+                            "shows": "Apache-2.0 in the model card",
+                            "accessed": "2026-06-04",
+                            "http_status": 200,
+                            "content_sha256": "ab" * 32,
+                        },
+                        {"url": "https://x.test/b", "shows": "MIT in the LICENSE file", "accessed": "2026-06-04"},
+                    ],
+                }
+            }
+        },
+    )
+    tables, errors, _ = build_rubric(sources, POLICY, {})
+    assert errors == []
+    by_url = {r["source_url"]: r for r in tables["product_score_sources"]}
+    assert by_url["https://x.test/a"]["source_http_status"] == "200"
+    assert by_url["https://x.test/a"]["source_content_sha256"] == "ab" * 32
+    assert by_url["https://x.test/b"]["source_http_status"] == ""
+    assert by_url["https://x.test/b"]["source_content_sha256"] == ""
+
+
 def test_a_note_comes_out_per_axis_at_the_sources_grain():
     """The notes table is what lets a consumer read a score's prose without the payload."""
     sources = _sources(
