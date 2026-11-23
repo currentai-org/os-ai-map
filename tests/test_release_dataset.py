@@ -232,32 +232,34 @@ def _history_setup():
 
 def test_a_candidate_without_history_models_needs_no_record():
     models, _candidate_, _payload = _history_setup()
-    assert R.record_problems(None, _candidate(), models) == []
+    assert R.record_problems(None, _candidate(), models, "obs", "d") == []
 
 
 def test_a_history_release_is_not_committed_without_its_stage_record():
     models, candidate, _payload = _history_setup()
-    (problem,) = R.record_problems(None, candidate, models)
+    (problem,) = R.record_problems(None, candidate, models, "obs", "d")
     assert "h, which keep history" in problem and "--stage-record" in problem
 
 
 def test_the_record_of_the_stage_that_was_checked_is_accepted():
     models, candidate, payload = _history_setup()
-    assert R.record_problems(R.stage_record("obs", candidate, payload), candidate, models) == []
+    assert R.record_problems(R.stage_record("obs", candidate, payload), candidate, models, "obs",
+                            R.candidate_digest(candidate)) == []
 
 
 def test_a_record_from_an_earlier_stage_or_another_candidate_is_refused():
     models, candidate, payload = _history_setup()
     record = R.stage_record("obs", candidate, payload)
     restaged = dict(candidate, latestCheck={"id": "k2", "status": "SUCCESS"})
-    assert "staged or checked again" in R.record_problems(record, restaged, models)[0]
-    assert "not c2" in R.record_problems(record, dict(candidate, id="c2"), models)[0]
+    assert "staged or checked again" in R.record_problems(record, restaged, models, "obs", record["digest"])[0]
+    assert "not c2" in R.record_problems(record, dict(candidate, id="c2"), models, "obs", record["digest"])[0]
 
 
 def test_a_record_that_did_not_send_forwards_only_is_refused():
     models, candidate, payload = _history_setup()
     payload["revisions"][1].pop("forwardsOnly")
-    (problem,) = R.record_problems(R.stage_record("obs", candidate, payload), candidate, models)
+    (problem,) = R.record_problems(R.stage_record("obs", candidate, payload), candidate, models, "obs",
+                            R.candidate_digest(candidate))
     assert problem.startswith("h: keeps history")
 
 
@@ -387,3 +389,40 @@ def test_platform_mutations_are_given_longer_than_a_read():
 
     R.Platform("t", "o", call=call).mutate(R.M_COMMIT, "commitDatasetRelease", {"candidateId": "c1"})
     assert seen["timeout"] == R.MUTATION_TIMEOUT > 60
+
+
+# --- review of 2026-11-22: an out-of-date check, and a record bound to the reviewed stage ------------
+
+
+def test_a_check_the_platform_calls_out_of_date_does_not_commit():
+    pending = dict(_candidate(), latestCheckOutOfDate=True)
+    (problem,) = R.commit_problems(pending, "c1", R.candidate_digest(pending))
+    assert "out of date" in problem
+
+
+def test_a_record_for_another_dataset_or_digest_is_refused():
+    models, candidate, payload = _history_setup()
+    record = R.stage_record("obs", candidate, payload)
+    digest = R.candidate_digest(candidate)
+    assert "dataset other" in " ".join(R.record_problems(dict(record, dataset="other"), candidate, models, "obs", digest))
+    assert "not the reviewed" in " ".join(R.record_problems(record, candidate, models, "obs", "f" * 64))
+
+
+def test_a_record_must_stage_exactly_what_the_candidate_releases():
+    models, candidate, payload = _history_setup()
+    digest = R.candidate_digest(candidate)
+    other = json.loads(json.dumps(payload))
+    other["revisions"][0]["dataModelRevisionId"] = "r9"
+    problems = " ".join(R.record_problems(R.stage_record("obs", candidate, other), candidate, models, "obs", digest))
+    assert "staged revisions the candidate does not release: m-a@r9" in problems
+    assert "the candidate releases revisions the stage record did not stage: m-a@r2" in problems
+
+
+def test_a_relocked_model_in_the_candidate_is_accounted_for_by_the_record():
+    models, candidate, payload = _history_setup()
+    candidate = dict(candidate, revisions=candidate["revisions"] + _candidate(revisions=(("b", "r5", "REFRESH"),))["revisions"])
+    digest = R.candidate_digest(candidate)
+    assert "did not stage: m-b@r5" in " ".join(
+        R.record_problems(R.stage_record("obs", candidate, payload), candidate, models, "obs", digest))
+    relock = dict(payload, refreshUpstream=["m-b"])
+    assert R.record_problems(R.stage_record("obs", candidate, relock), candidate, models, "obs", digest) == []

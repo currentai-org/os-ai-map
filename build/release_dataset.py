@@ -38,7 +38,7 @@ it from its start and loses those rows for good.
 **A commit names the candidate that was reviewed** (ruling R-2026-11-21-i). `status` and `stage`
 print the candidate's id and a digest. `commit` takes both, reads the candidate again, and refuses
 unless it is still the dataset's newest candidate, is open, has the same digest, passed its latest
-check, and has no commit blocker.
+check, the platform does not report that check out of date, and has no commit blocker.
 
 - The digest covers every release decision the platform lets a client read back: the release the
   candidate is based on; each model's revision, who staged it, its resolved output schema, its
@@ -49,8 +49,13 @@ check, and has no commit blocker.
   not report them back, so a reviewer cannot read them off a candidate. For a candidate that
   releases a model that keeps history, `commit` therefore also requires the **stage record** that
   `stage` wrote: the payload it sent and the check that ran on it. The commit is refused unless the
-  record names this candidate and its latest check and shows `forwardsOnly` on every such model.
-  A candidate staged any other way cannot be shown to be forwards-only, and is not committed here.
+  record names this dataset, this candidate, its latest check and the reviewed digest, stages
+  exactly the revisions the candidate releases, and shows `forwardsOnly` on every such model. A
+  candidate staged any other way cannot be shown to be forwards-only, and is not committed here.
+  The record is written by the maintainer's own `stage` run on their machine: it binds the commit
+  to that run, and is not independent proof of what the platform received.
+- A check the platform reports as out of date (`latestCheckOutOfDate`) refuses the commit on its
+  own, whatever its status.
 
 A release is the platform's record and cannot be withdrawn, which is why `commit` is a separate
 command that a person runs with values they read.
@@ -273,11 +278,16 @@ def history_schema_problems(candidate: dict, models: list[dict]) -> list[str]:
     return problems
 
 
-def record_problems(record: dict | None, candidate: dict, models: list[dict]) -> list[str]:
+def record_problems(record: dict | None, candidate: dict, models: list[dict], dataset: str,
+                    digest: str) -> list[str]:
     """Why the stage record does not show this candidate's history models went forwards-only.
 
     Empty when the candidate releases no model that keeps history, or when the record names this
-    candidate and its latest check and carries `forwardsOnly` for each such model.
+    dataset, this candidate, its latest check and the reviewed digest, stages exactly the
+    revisions the candidate releases, and carries `forwardsOnly` for each model that keeps history.
+
+    The record is evidence written by the maintainer's own `stage` run, not an independent proof
+    of what the platform received: it binds the commit to that run, and no further.
     """
     names = history_models_in(candidate, models)
     if not names:
@@ -286,13 +296,28 @@ def record_problems(record: dict | None, candidate: dict, models: list[dict]) ->
         return [f"the candidate releases {', '.join(names)}, which keep history, and forwardsOnly cannot be read "
                 "back from the platform; pass the --stage-record that `stage` wrote for it"]
     problems = []
+    if record.get("dataset") != dataset:
+        problems.append(f"the stage record is for dataset {record.get('dataset')}, not {dataset}")
     if record.get("candidate_id") != candidate["id"]:
         problems.append(f"the stage record is for candidate {record.get('candidate_id')}, not {candidate['id']}")
+    if record.get("digest") != digest:
+        problems.append(f"the stage record's digest is {record.get('digest')}, not the reviewed {digest}")
     check = (candidate.get("latestCheck") or {}).get("id")
     if record.get("check_id") != check:
         problems.append(f"the stage record's check is {record.get('check_id')} and the candidate's latest is {check}: "
                         "it was staged or checked again after the record was written")
-    sent = {entry["dataModelId"]: entry for entry in (record.get("payload") or {}).get("revisions") or []}
+    payload = record.get("payload") or {}
+    sent = {entry["dataModelId"]: entry for entry in payload.get("revisions") or []}
+    staged = {(model_id, entry.get("dataModelRevisionId")) for model_id, entry in sent.items()}
+    released = {(entry["dataModel"]["id"], entry["revision"]["id"]) for entry in candidate["revisions"]}
+    relocked = set(payload.get("refreshUpstream") or [])
+    if staged - released:
+        problems.append("the stage record staged revisions the candidate does not release: "
+                        + ", ".join(f"{m}@{r}" for m, r in sorted(staged - released)))
+    unstaged = {(m, r) for m, r in released - staged if m not in relocked}
+    if unstaged:
+        problems.append("the candidate releases revisions the stage record did not stage: "
+                        + ", ".join(f"{m}@{r}" for m, r in sorted(unstaged)))
     ids = {model["name"]: model["id"] for model in models}
     for name in names:
         if not (sent.get(ids[name]) or {}).get("forwardsOnly"):
@@ -329,6 +354,10 @@ def commit_problems(pending: dict | None, candidate_id: str, digest: str) -> lis
     check = (pending.get("latestCheck") or {}).get("status")
     if check != "SUCCESS":
         problems.append(f"its latest check is {check or 'not run'}, not SUCCESS")
+    if pending.get("latestCheckOutOfDate"):
+        # Refused on its own, whatever the status says: a SUCCESS that the platform itself calls
+        # out of date describes a candidate or upstream state that no longer holds.
+        problems.append("the platform reports its latest check is out of date; stage again and review the new check")
     if pending.get("commitBlockers"):
         problems.append(f"the platform reports commit blockers: {', '.join(pending['commitBlockers'])}")
     return problems
@@ -519,7 +548,8 @@ def main(argv: list[str] | None = None, platform=None) -> int:
     if not problems:
         models = platform.models(dataset_id)
         record = json.loads(args.stage_record.read_text()) if args.stage_record else None
-        problems = history_schema_problems(pending, models) + record_problems(record, pending, models)
+        problems = history_schema_problems(pending, models) + record_problems(
+            record, pending, models, args.dataset, args.digest)
     if problems:
         print("not committed:", file=sys.stderr)
         for problem in problems:
