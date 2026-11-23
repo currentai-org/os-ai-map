@@ -30,10 +30,10 @@ jobs:
       group: proposals-${{ matrix.kind }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -46,7 +46,7 @@ jobs:
             --since-days "${{ inputs.since_days || 7 }}" --report proposals-report.json --pace 1
       - name: Keep the report whatever happens next
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: proposals-${{ matrix.kind }}
           path: proposals-report.json

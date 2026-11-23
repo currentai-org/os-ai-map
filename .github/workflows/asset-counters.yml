@@ -31,8 +31,8 @@ jobs:
   capture:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -68,7 +68,7 @@ jobs:
           uv run python -m build.snapshot_counters --check
       - name: Keep a copy whatever happens next
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: asset-counters
           path: sources/snapshots/asset_counters.csv

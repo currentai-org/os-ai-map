@@ -115,7 +115,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: serialize_scores builds the payload, and build.freshness_payload
           # dates each score file from its last commit. A shallow clone collapses all 522
@@ -123,7 +123,7 @@ jobs:
           # freshness field that is uniformly wrong. Same reason regenerate.yml and
           # freshness.yml pin it.
           fetch-depth: 0
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - name: Install dependencies
@@ -164,7 +164,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: serialize_scores builds the payload, and build.freshness_payload
           # dates each score file from its last commit. A shallow clone collapses all 522
@@ -172,7 +172,7 @@ jobs:
           # freshness field that is uniformly wrong. Same reason regenerate.yml and
           # freshness.yml pin it.
           fetch-depth: 0
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - name: Install dependencies

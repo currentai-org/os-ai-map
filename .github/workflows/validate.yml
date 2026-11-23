@@ -13,12 +13,12 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history, as in the validate job: tests exercise build.freshness_payload,
           # which dates each score file from its last commit.
           fetch-depth: 0
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - name: Install dependencies
@@ -31,12 +31,12 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: build.freshness_payload dates each score file from its last
           # commit, and a shallow clone collapses all 470 onto the tip commit.
           fetch-depth: 0
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           enable-cache: true
       - name: Install dependencies
@@ -213,7 +213,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Fail if PR hand-edits bot-owned generated files
@@ -254,7 +254,7 @@ jobs:
       # whether the golden gets checked, and a guard whose two sides come from the same source
       # cannot fire. `--strict` is what makes a stale fingerprint a failure instead of a notice,
       # forcing the recompute to run.
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v10.4.0
         if: env.GOLDEN_EXCEPTION == '1'
         with:
           enable-cache: true
