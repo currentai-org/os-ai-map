@@ -109,8 +109,9 @@ a history model must run after its upstream's Sunday sweep and before the next o
 | A run is repeated on the same sweep | Nothing | The merge lands on the same keys. Safe to re-run at will. |
 | The upstream sweep is partial (some rows missing or failed) | Nothing is removed, but the date records a partial sweep | The merge keeps what it saw. Readers must use the upstream's own `http_status` and coverage columns, not row counts alone. |
 | A sweep straddles midnight UTC | One sweep can land on two observation dates | Not seen so far (every upstream held a single date). Taking the date from the dataset run's start, not each row's fetch time, would remove the risk. |
-| A revision changes the schema | Possibly the history itself | Unproven. Releases are forwards-only, but OSO-8315 shows a release that drops a column from an incremental model is accepted. Until that is fixed, treat any column removal or rename as a rebuild that loses history, and stage additive changes only. |
-| The model is rebuilt from scratch (a fresh build) | All history | None. Before any fresh build, export the table as a frozen snapshot, as was done for `observations.product_adoption_baseline`. |
+| A changed revision is released without `forwardsOnly` | All history | None. A release recomputes a changed model unless its revision is staged with `forwardsOnly: true`, and a recomputed history model keeps only what its upstream holds now: one sweep. `build/release_dataset.py` already stages every model that keeps history this way (R-2026-11-08-s); a stage made any other way does not. Seen on 2026-11-23: a code-only release of the scratch `claim_triage` model, staged directly rather than through that tool, dropped every row the earlier run had written. |
+| A revision removes or retypes a column, or changes the kind or unique key | All history | The platform rejects `forwardsOnly` for these and always recomputes, and OSO-8315 shows a column removal is accepted without warning. Export the table as a frozen snapshot first, as was done for `observations.product_adoption_baseline`, or do not make the change. |
+| The model is rebuilt from scratch (a fresh build) | All history | None. Before any fresh build, export the table as a frozen snapshot. |
 
 Two facts specific to one model each:
 
@@ -132,5 +133,6 @@ Two facts specific to one model each:
    they are scheduled.
 4. **Where the models live:** one production dataset for all history, kept apart from the feeds it
    reads, so a feed's release cannot touch history.
-5. **Schema changes:** whether to forbid non-additive changes to history models until OSO-8315 is
-   fixed, and to require a frozen export before any fresh build.
+5. **Schema changes:** a rule that history models are released only through
+   `build/release_dataset.py`, which stages them forwards-only; that non-additive changes are
+   forbidden until OSO-8315 is fixed; and that a frozen export precedes any fresh build.
