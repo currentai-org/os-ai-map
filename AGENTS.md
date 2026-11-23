@@ -145,6 +145,9 @@ Releases           release_dataset stages, prints and commits a dataset release 
 Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it applies the
                    inclusion principle in docs/architecture/adr-005-closed-product-inclusion.md,
                    which is guidance and not a gate. Never wire one into preflight or CI.
+                   trace_generations lists the scoring-trace generations the warehouse
+                   holds and how far each agrees with the recorded scores; --verify
+                   rebuilds each at its own commit and compares all three tables.
                    review_queue gathers every open question (held axes, deferred rulings,
                    and with --live the contradiction sweep) and says what each one waits on:
                    a ruling, another evidence pass, a working fetch, or a scheduled run.

@@ -98,6 +98,11 @@ M_URL = """mutation($staticModelId: ID!){
   createStaticModelUploadUrl(staticModelId:$staticModelId){ uploadId url } }"""
 M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
   createStaticModelRunRequest(input:$input){ success runGroup{ id status } } }"""
+# Retries the FAILED runs of one terminal run group, in that same group. It is the only way to retry
+# an APPEND: the platform refuses a second run request for an upload it has already been asked to
+# append, because loading the same file twice would double its rows.
+M_RETRY = """mutation($input: RetryFailedRunGroupInput!){
+  retryFailedRunGroup(input:$input){ runGroup{ id status } } }"""
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
 Q_RUN_GROUP = """query($where: JSON){ runGroups(where:$where){ edges{ node{ id status } } } }"""
 Q_RUN_GROUP_ERRORS = """query($where: JSON){ runGroups(where:$where){ edges{ node{ id
@@ -165,18 +170,24 @@ def is_transient(errors: list[str]) -> bool:
     return bool(errors) and all(any(m in e for m in TRANSIENT_LOAD_ERRORS) for e in errors)
 
 
-def load_upload(request, poll, errors, label: str, attempts: int = LOAD_ATTEMPTS) -> tuple[str, str]:
+def load_upload(request, poll, errors, label: str, attempts: int = LOAD_ATTEMPTS,
+                retry=None) -> tuple[str, str]:
     """Request a run, await its run group, and re-request it after a transient platform failure.
 
     `request()` returns the run group a new run request created, `poll(group_id)` its terminal
     status, `errors(group_id)` its failed runs' messages. The caller passes its own functions so a
     publisher's module-level names (and the tests that patch them) stay in charge. Returns the last
     run group's id and status; anything but SUCCESS fails the publish as before.
+
+    `retry(group_id)`, when given, replaces the fresh request on every attempt after the first and
+    returns the run group it retried. An APPEND passes one: a second request for the same upload
+    is refused, so its failed run group is retried in place instead.
     """
     import time
 
+    group_id = ""
     for attempt in range(1, attempts + 1):
-        group_id = request()["id"]
+        group_id = (request() if attempt == 1 or retry is None else retry(group_id))["id"]
         status = poll(group_id)
         if status != GROUP_FAILED or attempt == attempts or not is_transient(errors(group_id)):
             return group_id, status

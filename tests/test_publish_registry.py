@@ -508,3 +508,37 @@ def test_run_request_input_is_static_model_id_not_selected_models(tmp_path, monk
     assert inputs and all(set(i) == {"datasetId", "staticModelId", "uploadId"} for i in inputs)
     assert all(i["uploadId"] == f"upload-{i['staticModelId']}" for i in inputs)
     assert not any("selectedModels" in i for i in inputs)
+
+
+def test_load_upload_retries_in_place_when_given_a_retry(monkeypatch):
+    """An APPEND cannot be requested twice for one upload, so its failed run group is retried in
+    place: one request, then the retry, on the same group."""
+    monkeypatch.setattr("time.sleep", lambda seconds: None)
+    calls: list[str] = []
+    statuses = iter([pr.GROUP_FAILED, pr.GROUP_SUCCESS])
+
+    def request():
+        calls.append("request")
+        return {"id": "grp-1"}
+
+    def retry(group_id):
+        calls.append(f"retry {group_id}")
+        return {"id": group_id}
+
+    group_id, status = pr.load_upload(
+        request=request, poll=lambda gid: next(statuses), errors=lambda gid: [OPA_504],
+        label="axis_results", retry=retry,
+    )
+    assert calls == ["request", "retry grp-1"]
+    assert (group_id, status) == ("grp-1", pr.GROUP_SUCCESS)
+
+
+def test_load_upload_requests_again_when_no_retry_is_given(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda seconds: None)
+    groups = iter(["grp-1", "grp-2"])
+    statuses = iter([pr.GROUP_FAILED, pr.GROUP_SUCCESS])
+    group_id, status = pr.load_upload(
+        request=lambda: {"id": next(groups)}, poll=lambda gid: next(statuses),
+        errors=lambda gid: [OPA_504], label="products",
+    )
+    assert (group_id, status) == ("grp-2", pr.GROUP_SUCCESS)

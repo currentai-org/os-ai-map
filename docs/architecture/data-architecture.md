@@ -881,6 +881,10 @@ declaration `eb828b57b14d`) via the dedicated publisher `build/publish_scoring_t
 - `evaluation.axis_results` — grain
   `(declaration_version_id, product_slug, category_slug, axis)`
 
+Each publish appends one generation, the rows carrying its `declaration_version_id`, so the three
+tables hold the trace of every commit they were published from and a reader selects one
+generation by that id (`docs/operations/deploy-scoring-trace.md`).
+
 Together they make this chain queryable:
 
 ```text
