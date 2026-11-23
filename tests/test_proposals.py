@@ -189,3 +189,26 @@ def test_the_cli_applies_a_file_and_summarizes_the_saved_report(tmp_path, capsys
     assert "**1 already current.**" in capsys.readouterr().out
     assert proposals.main(["label", "redate"], root=root) == 0
     assert capsys.readouterr().out.strip() == "freshness"
+
+
+def test_the_summary_shows_what_producers_reported_as_untrusted_and_unread(tmp_path):
+    root = _corpus(tmp_path)
+    rows = [_proposal(evidence=[{"url": "https://a/LICENSE", "outcome": "unchanged",
+                                 "content_sha256": "a" * 64}]),
+            _proposal(proposal_id="bad", evidence="{not json")]
+    report = proposals.apply_redate(root, rows, TODAY, fetch=_same_bytes)
+    by_id = {p["proposal_id"]: p for p in report["proposals"]}
+    assert by_id["redate:p:openness:2026-11-22"]["evidence"][0]["url"] == "https://a/LICENSE"
+    text = proposals.summary_markdown(report)
+    shown = text[text.index("What the producers reported"):]
+    assert "untrusted; the applier did not read it" in shown
+    assert "unchanged https://a/LICENSE sha256=aaaaaaaaaaaa" in shown
+    assert "bad (currentai.proposals.redate@r1, rejected)" in shown
+    assert "unreadable: '{not json'" in shown
+
+
+def test_long_lists_are_capped_and_point_at_the_report():
+    many = [{"proposal_id": f"p{i}", "product_slug": "p", "axis": "openness", "producer": "m",
+             "outcome": "rejected", "reason": "x", "evidence": []} for i in range(proposals.LIST_CAP + 5)]
+    text = proposals.summary_markdown({"kind": "redate", "proposals": many, "products": []})
+    assert "... and 5 more, in the run's report artifact" in text

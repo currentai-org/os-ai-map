@@ -20,7 +20,7 @@ proposal costs a fetch and nothing else, and a producer needs no write authority
 A `redate` proposal is limited to openness by the same refusal the weekly re-verification applies,
 and an axis is stamped only where the applier's own fetch confirms every recorded dimension
 (`docs/reference/evidence-and-freshness.md`, ruling R-2026-11-21-b). The producer's `evidence`
-field is shown to the reviewer and decides nothing.
+field is shown to the reviewer, labeled untrusted, and decides nothing.
 
 Each proposal ends in one of four outcomes, counted apart in the pull request: **applied**, **not
 confirmed** (the applier read the sources and could not confirm the claim), **already current**
@@ -94,12 +94,19 @@ output before it is wired into the table.
 
 One branch per kind, `proposals/<kind>`, rebuilt from `main` on every run and force-pushed, so the
 open pull request always holds that day's reading and an unmerged one is replaced rather than
-stacked. A day with nothing to apply leaves an open pull request as it is. The run gates the result
-with `build.preflight --skip-tests` and `build.check_redate` before it pushes, and opens nothing if
-they fail; CI then runs in full on the pull request and writes the review sheet.
+stacked. A run that applies nothing closes an open pull request, with that day's report as the
+closing comment: a re-date that today's reading did not reproduce, or whose proposal left the
+window, is not left mergeable.
 
-A failed scheduled run opens a sentinel issue through `report-failure.yml`. The bridge is not on its
-retry list, because it pushes and opens pull requests.
+The run gates the result with `build.preflight --skip-tests` and `build.check_redate`, commits it,
+and generates the ADR-004 review sheet with `build.check_corpus_diff --base origin/main` against
+that commit. It pushes only if all three pass. The description carries the outcome counts, the
+applier's own reading, the review sheet, and, collapsed and labeled untrusted, what each producer
+reported. CI then runs in full on the pull request.
+
+A failed scheduled run opens a sentinel issue through `report-failure.yml` and leaves an open pull
+request as it was, so read the sentinel before merging one. The bridge is not on its retry list,
+because it pushes and opens pull requests.
 
 ## Adding a kind
 

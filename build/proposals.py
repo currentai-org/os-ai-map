@@ -79,6 +79,9 @@ class Outcome:
     producer: str
     outcome: str
     reason: str = ""
+    #: What the producer said it saw, as it wrote it. Shown to the reviewer as an untrusted
+    #: observation; nothing in the applier reads it.
+    evidence: object = None
 
 
 def load_schema() -> dict:
@@ -199,7 +202,8 @@ def apply_redate(root: Path, proposals: list[dict], today: date, *, dry_run: boo
         slug, axis = str(proposal.get("product_slug") or ""), str(proposal.get("axis") or "")
 
         def reject(reason: str) -> None:
-            outcomes.append(Outcome(pid, slug, axis, _producer_label(proposal), REJECTED, reason))
+            outcomes.append(Outcome(pid, slug, axis, _producer_label(proposal), REJECTED, reason,
+                                    proposal.get("evidence")))
 
         error = schema_error(proposal, schema)
         if error:
@@ -215,7 +219,7 @@ def apply_redate(root: Path, proposals: list[dict], today: date, *, dry_run: boo
         verified = _last_verified(root, slug, axis)
         if verified is not None and verified >= parse_date(proposal["observed_at"]):
             outcomes.append(Outcome(pid, slug, axis, _producer_label(proposal), ALREADY_CURRENT,
-                                    f"last_verified {verified.isoformat()}"))
+                                    f"last_verified {verified.isoformat()}", proposal["evidence"]))
             continue
         due.setdefault((slug, axis), []).append(proposal)
 
@@ -240,7 +244,8 @@ def apply_redate(root: Path, proposals: list[dict], today: date, *, dry_run: boo
         for proposal in group:
             outcomes.append(Outcome(str(proposal["proposal_id"]), slug, axis,
                                     _producer_label(proposal),
-                                    APPLIED if confirmed else NOT_CONFIRMED, reason))
+                                    APPLIED if confirmed else NOT_CONFIRMED, reason,
+                                    proposal["evidence"]))
 
     return {
         "kind": "redate",
@@ -262,8 +267,35 @@ def _unconfirmed_reason(result: reverify.ProductResult) -> str:
 HANDLERS = {"redate": apply_redate}
 
 
+#: Lines per collapsed list in the pull request body. GitHub refuses a body over 65,536
+#: characters, and the run's report artifact holds every line.
+LIST_CAP = 200
+
+
+def _capped(rows: list[str]) -> list[str]:
+    if len(rows) <= LIST_CAP:
+        return rows
+    return rows[:LIST_CAP] + [f"... and {len(rows) - LIST_CAP} more, in the run's report artifact"]
+
+
+def _evidence_lines(proposal: dict) -> list[str]:
+    head = f"{proposal['proposal_id']} ({proposal['producer']}, {proposal['outcome']})"
+    evidence = proposal.get("evidence")
+    if not isinstance(evidence, list):
+        return [head, f"    unreadable: {evidence!r}"]
+    rows = [head]
+    for item in evidence:
+        if isinstance(item, dict):
+            digest = f" sha256={item['content_sha256'][:12]}" if item.get("content_sha256") else ""
+            rows.append(f"    {item.get('outcome', '?'):9} {item.get('url', '?')}{digest}")
+        else:
+            rows.append(f"    unreadable: {item!r}")
+    return rows
+
+
 def summary_markdown(report: dict) -> str:
-    """The pull request body: proposals by outcome, then the applier's own reading."""
+    """The pull request body: proposals by outcome, the applier's own reading, then what the
+    producers reported, labeled as untrusted."""
     proposals = report["proposals"]
     counts = {name: sum(p["outcome"] == name for p in proposals) for name in OUTCOMES}
     producers = sorted({p["producer"] for p in proposals})
@@ -282,13 +314,14 @@ def summary_markdown(report: dict) -> str:
         f"- **{counts[REJECTED]} rejected.** The row failed the schema, named no known product, or "
         "asked for an axis this kind may not touch.",
         "",
-        "This pull request updates itself daily until it merges.",
+        "Each run rebuilds this pull request from `main` with that day's reading. A run that "
+        "reproduces none of it closes the pull request.",
     ]
     held = [p for p in proposals if p["outcome"] in (NOT_CONFIRMED, REJECTED)]
     if held:
         lines += ["", "<details><summary>Proposals not applied</summary>", "", "```"]
-        lines += [f"{p['outcome']:14} {p['product_slug'] or '?':32} {p['proposal_id']}  {p['reason']}"
-                  for p in held]
+        lines += _capped([f"{p['outcome']:14} {p['product_slug'] or '?':32} {p['proposal_id']}  "
+                          f"{p['reason']}" for p in held])
         lines += ["```", "", "</details>"]
     if report["products"]:
         lines += ["", "## The applier's reading", "",
@@ -296,6 +329,11 @@ def summary_markdown(report: dict) -> str:
                       {"products": report["products"]},
                       selection=f"the {len(report['products'])} product(s) the proposals named",
                   ).rstrip()]
+    if proposals:
+        lines += ["", "<details><summary>What the producers reported (untrusted; the applier did "
+                  "not read it)</summary>", "", "```"]
+        lines += _capped([line for p in proposals for line in _evidence_lines(p)])
+        lines += ["```", "", "</details>"]
     return "\n".join(lines) + "\n"
 
 

@@ -62,24 +62,46 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         # One branch per kind, rebuilt from main on every run, so the pull request always holds
-        # today's reading and an unmerged one is replaced rather than stacked. A day with nothing
-        # to apply leaves an open pull request as it is.
+        # today's reading and an unmerged one is replaced rather than stacked. A run that applies
+        # nothing closes an open one: yesterday's re-dates that today's reading did not reproduce,
+        # or whose proposals left the window, are not left mergeable.
+        #
+        # The ADR-004 review sheet is generated after the commit, because check_corpus_diff reads
+        # the touched products from the committed diff, and a sheet that fails stops the run
+        # before anything is pushed.
         run: |
-          if [ -z "$(git status --porcelain sources/)" ]; then
-            echo "Nothing applied; leaving any open pull request as it is."
-            exit 0
-          fi
           KIND="${{ matrix.kind }}"
           BRANCH="proposals/$KIND"
+          OPEN="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')"
+          if [ -z "$(git status --porcelain sources/)" ]; then
+            if [ -n "$OPEN" ]; then
+              {
+                echo "Closed by the $(date -u +%F) bridge run, which applied nothing: none of this"
+                echo "pull request's changes were reproduced by that day's reading, or their proposals"
+                echo "left the window. A later run that confirms them opens a new one."
+                echo
+                uv run python -m build.proposals summarize proposals-report.json
+              } > close-comment.md
+              gh pr close "$OPEN" --comment "$(cat close-comment.md)" --delete-branch
+              echo "Closed pull request #$OPEN: nothing reproduced today."
+            else
+              echo "Nothing applied and no open pull request."
+            fi
+            exit 0
+          fi
           LABEL="$(uv run python -m build.proposals label "$KIND")"
-          uv run python -m build.proposals summarize proposals-report.json > pr-body.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
           git add sources/
           git commit -m "chore(proposals): apply $KIND proposals $(date -u +%F)"
+          uv run python -m build.check_corpus_diff --base origin/main --sheet review-sheet.md
+          {
+            uv run python -m build.proposals summarize proposals-report.json
+            echo
+            cat review-sheet.md
+          } > pr-body.md
           git push --force origin "$BRANCH"
-          OPEN="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')"
           if [ -n "$OPEN" ]; then
             gh pr edit "$OPEN" --body-file pr-body.md
             echo "Updated pull request #$OPEN."
