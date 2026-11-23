@@ -8,6 +8,8 @@ projected out. Pure functions, exercised here with synthetic rows — no platfor
 
 import sys
 
+import pytest
+
 import build.cutover_preflight as CP
 
 
@@ -196,3 +198,42 @@ def test_cli_semantic_against_a_deployed_export(tmp_path, monkeypatch):
     deployed["axis_results"][0]["result_score"] = "5"
     _write_candidate_csvs(export, deployed)
     assert CP.main() == 2
+
+
+# --- the trace tables hold one generation per publish; the cutover compares with the newest ------
+
+
+def _generation(dvid, sha, product):
+    return {CP.IDENTITY_COLUMN: dvid, CP.SOURCE_SHA_COLUMN: sha, "product_slug": product}
+
+
+def test_newest_generation_is_chosen_by_commit_date():
+    rows = [_generation("old", "aaa1111", "p"), _generation("new", "bbb2222", "p"), _generation("new", "bbb2222", "q")]
+    dates = {"aaa1111": "2026-11-09T07:00:00+00:00", "bbb2222": "2026-11-16T07:00:00+00:00"}
+    newest = CP.newest_generation("axis_results", rows, lambda sha: {"committed_at": dates[sha]})
+    assert {r[CP.IDENTITY_COLUMN] for r in newest} == {"new"} and len(newest) == 2
+
+
+def test_a_single_generation_and_a_table_without_a_commit_column_pass_through():
+    one = [_generation("only", "aaa1111", "p")]
+    assert CP.newest_generation("axis_results", one, lambda sha: pytest.fail("no git read needed")) == one
+    adoption = [{CP.IDENTITY_COLUMN: "x", "product_slug": "p"}, {CP.IDENTITY_COLUMN: "y", "product_slug": "p"}]
+    assert CP.newest_generation("adoption_reconciliation", adoption) == adoption
+
+
+def test_an_undatable_generation_stops_the_comparison_instead_of_guessing():
+    rows = [_generation("old", "aaa1111", "p"), _generation("new", "bbb2222", "p")]
+    with pytest.raises(RuntimeError, match="cannot date"):
+        CP.newest_generation("axis_results", rows, lambda sha: {"committed_at": None})
+
+
+def test_two_generations_from_commits_made_at_the_same_time_are_not_ordered_by_accident():
+    rows = [_generation("one", "aaa1111", "p"), _generation("two", "bbb2222", "p")]
+    same = "2026-11-16T07:00:00+00:00"
+    with pytest.raises(RuntimeError, match="cannot be chosen"):
+        CP.newest_generation("axis_results", rows, lambda sha: {"committed_at": same})
+
+
+def test_a_null_from_pandas_compares_equal_to_an_empty_csv_cell():
+    assert CP._canonical_scalar(float("nan")) == "" == CP._canonical_scalar(None)
+    assert CP._canonical_scalar(True) == "True" and CP._canonical_scalar(4) == "4"

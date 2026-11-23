@@ -126,7 +126,7 @@ def _supported_parameters(payload: object) -> str:
 
 @oso.model(
     external_origins=["https://openrouter.ai"],
-    capabilities=oso.Capabilities(fetch=True),
+    capabilities=oso.Capabilities(fetch=True), columns=[oso.Column(name="model_id", type="VARCHAR"), oso.Column(name="name", type="VARCHAR"), oso.Column(name="provider", type="VARCHAR"), oso.Column(name="created", type="TIMESTAMP(6)"), oso.Column(name="context_length", type="BIGINT"), oso.Column(name="pricing_prompt", type="DOUBLE"), oso.Column(name="pricing_completion", type="DOUBLE"), oso.Column(name="architecture_modality", type="VARCHAR"), oso.Column(name="architecture_tokenizer", type="VARCHAR"), oso.Column(name="top_provider_is_moderated", type="BOOLEAN"), oso.Column(name="supported_parameters", type="VARCHAR"), oso.Column(name="fetched_at", type="TIMESTAMP(6)")]
 )
 def models(context: oso.Context) -> oso.DataFrame:
     headers = {"User-Agent": USER_AGENT}

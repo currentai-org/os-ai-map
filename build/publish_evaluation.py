@@ -69,6 +69,7 @@ from build.adoption_reconciliation import COLUMNS as RECONCILIATION_COLUMNS
 from build.publish_registry import (
     GROUP_SUCCESS,
     M_DATASET,
+    M_RETRY,
     M_RUN,
     M_URL,
     Q_DATASETS,
@@ -329,11 +330,19 @@ def resolve_evaluation_dataset(name: str, org_id: str, token: str, create: bool)
     return created["createDataset"]["dataset"]["id"]
 
 
-def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receipt, mismatches_fn) -> int:
+def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receipt, mismatches_fn,
+                write_disposition: str | None = None, state_fn=None) -> int:
     """Upload each table, request+await ONE run group per model (serialized, run-group-bound,
     fail-fast), then verify the deployed row count/schema via pyoso. Returns 0 iff every model
     reached terminal SUCCESS and the deployed data matches; nonzero otherwise. Shared by the deploy
     and rollback paths, and (imported) by the scoring-trace publisher, so the sequence cannot drift.
+
+    `write_disposition` is the platform's `StaticModelWriteDisposition`. Left unset, the run
+    replaces the table with the upload, which is the platform default. `"APPEND"` adds the upload's
+    rows to the table, and a transient failure then retries the failed run group in place, because
+    the platform refuses a second run request for an upload it was already asked to append.
+    `state_fn(dataset_name, table)` reads the deployed state the candidate is verified against and
+    defaults to the whole table; an appending caller passes one scoped to the rows it appended.
 
     `CreateStaticModelRunRequestInput` takes (datasetId, staticModelId, uploadId), one model per
     request, and loads only the upload it names;
@@ -342,6 +351,9 @@ def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receip
     and polls the EXACT run group it returned — never a model's "latest run" — with a generous 1800s
     budget; the first non-SUCCESS stops the run.
     """
+    def retry_in_place(group_id: str) -> dict:
+        return graphql(M_RETRY, {"input": {"runGroupId": group_id}}, token)["retryFailedRunGroup"]["runGroup"]
+
     upload_ids: dict[str, str] = {}
     for table in tables:
         path = src_dir / f"{table}.csv"
@@ -353,11 +365,14 @@ def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receip
     statuses: dict[str, tuple[str, str]] = {}
     for table in tables:
         run_input = {"datasetId": dataset_id, "staticModelId": models[table][0], "uploadId": upload_ids[table]}
+        if write_disposition is not None:
+            run_input["writeDisposition"] = write_disposition
         group_id, status = load_upload(
             request=lambda: graphql(M_RUN, {"input": run_input}, token)["createStaticModelRunRequest"]["runGroup"],
             poll=lambda gid: poll_run_group(gid, token, timeout=1800.0),
             errors=lambda gid: run_group_errors(gid, token, gql=graphql),
             label=table,
+            retry=retry_in_place if write_disposition == "APPEND" else None,
         )
         statuses[table] = (group_id, status)
         print(f"  {table}: run group {group_id} finished {status}")
@@ -370,7 +385,8 @@ def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receip
             print(f"  ! {problem}", file=sys.stderr)
         return 2
 
-    deployed = {t: deployed_table_state(dataset_name, t) for t in tables}
+    read_state = state_fn or deployed_table_state
+    deployed = {t: read_state(dataset_name, t) for t in tables}
     mismatches = mismatches_fn(receipt, deployed)
     if mismatches:
         print("deployed data does not match the candidate — recording no occurrence:", file=sys.stderr)
