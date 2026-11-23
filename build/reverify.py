@@ -595,15 +595,20 @@ def outcome_counts(product: dict) -> dict[str, int]:
     }
 
 
-def summary_markdown(report: dict) -> str:
-    """The body of the freshness pull request: the three outcomes, counted, then every product."""
+def summary_markdown(report: dict, selection: str | None = None) -> str:
+    """The body of the freshness pull request: the three outcomes, counted, then every product.
+
+    `selection` names how the products were chosen, for the opening sentence; the default is
+    this module's own rule, the N oldest. `build.proposals` passes its own wording.
+    """
     per_product = [(p, outcome_counts(p)) for p in report["products"]]
+    selection = selection or f"the {len(per_product)} oldest products"
     total = {key: sum(counts[key] for _p, counts in per_product) for key in
              ("unchanged", "verified", "unresolved", "redated_unchanged", "redated_verified")}
     stamped = sum(1 for p, _counts in per_product if p["stamped"])
     refuted = sum(len(p.get("refuted", [])) for p, _counts in per_product)
     lines = [
-        f"Deterministic re-verification of the {len(per_product)} oldest products. An openness date was "
+        f"Deterministic re-verification of {selection}. An openness date was "
         "stamped only where every recorded dimension's establishing source was fetched again and still "
         "supports the recorded claim.",
         "",

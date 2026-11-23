@@ -1,0 +1,111 @@
+# The proposals bridge (ruling R-2026-11-21-f). Reads the platform proposals table daily, applies
+# each kind with build/proposals.py, gates the result, and keeps one rolling pull request per kind,
+# labeled per ADR-004. A proposal is a request: the applier re-derives every change from its own
+# fetch, so nothing a producer wrote is copied into sources/. Only a person merges.
+#
+# Reads currentai.proposals.proposals (contract in warehouse/dependencies.yaml). Switched on by the
+# repository variable PROPOSALS_BRIDGE=on; until then the job is skipped, so the schedule costs
+# nothing. See docs/operations/proposals-bridge.md.
+name: proposals
+on:
+  schedule:
+    - cron: "40 11 * * *"     # daily, after the morning platform runs and clear of reverify (Tue 10:00)
+  workflow_dispatch:
+    inputs:
+      since_days:
+        description: "Read proposals created in the last N days"
+        default: "7"
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  bridge:
+    if: ${{ vars.PROPOSALS_BRIDGE == 'on' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [redate]
+    concurrency:
+      group: proposals-${{ matrix.kind }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Apply the proposals
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          uv run python -m build.proposals apply --kind "${{ matrix.kind }}" \
+            --since-days "${{ inputs.since_days || 7 }}" --report proposals-report.json --pace 1
+      - name: Keep the report whatever happens next
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposals-${{ matrix.kind }}
+          path: proposals-report.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Gates on the result
+        # preflight runs what CI's validate workflow runs; check_redate asks every moved date for
+        # the reading behind it. A run that fails here opens no pull request.
+        run: |
+          uv run python -m build.preflight --skip-tests
+          uv run python -m build.check_redate --base origin/main
+      - name: Update the one rolling pull request for this kind
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        # One branch per kind, rebuilt from main on every run, so the pull request always holds
+        # today's reading and an unmerged one is replaced rather than stacked. A run that applies
+        # nothing closes an open one: yesterday's re-dates that today's reading did not reproduce,
+        # or whose proposals left the window, are not left mergeable.
+        #
+        # The ADR-004 review sheet is generated after the commit, because check_corpus_diff reads
+        # the touched products from the committed diff, and a sheet that fails stops the run
+        # before anything is pushed.
+        run: |
+          KIND="${{ matrix.kind }}"
+          BRANCH="proposals/$KIND"
+          OPEN="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')"
+          if [ -z "$(git status --porcelain sources/)" ]; then
+            if [ -n "$OPEN" ]; then
+              {
+                echo "Closed by the $(date -u +%F) bridge run, which applied nothing: none of this"
+                echo "pull request's changes were reproduced by that day's reading, or their proposals"
+                echo "left the window. A later run that confirms them opens a new one."
+                echo
+                uv run python -m build.proposals summarize proposals-report.json
+              } > close-comment.md
+              gh pr close "$OPEN" --comment "$(cat close-comment.md)" --delete-branch
+              echo "Closed pull request #$OPEN: nothing reproduced today."
+            else
+              echo "Nothing applied and no open pull request."
+            fi
+            exit 0
+          fi
+          LABEL="$(uv run python -m build.proposals label "$KIND")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add sources/
+          git commit -m "chore(proposals): apply $KIND proposals $(date -u +%F)"
+          uv run python -m build.check_corpus_diff --base origin/main --sheet review-sheet.md
+          {
+            uv run python -m build.proposals summarize proposals-report.json
+            echo
+            cat review-sheet.md
+          } > pr-body.md
+          git push --force origin "$BRANCH"
+          if [ -n "$OPEN" ]; then
+            gh pr edit "$OPEN" --body-file pr-body.md
+            echo "Updated pull request #$OPEN."
+          else
+            gh pr create --head "$BRANCH" --title "chore(proposals): $KIND proposals from the platform" \
+              --body-file pr-body.md --label "$LABEL"
+          fi

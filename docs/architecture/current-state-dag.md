@@ -113,6 +113,7 @@ graph LR
   currentai__language_representation__classification_src[currentai.language_representation.classification_src]:::dep --> currentai__language_representation__classification[currentai.language_representation.classification]:::dep
   currentai__language_representation__measurements[currentai.language_representation.measurements]:::dep --> currentai__language_representation__classification_src[currentai.language_representation.classification_src]:::dep
   currentai__language_representation__measurements_src[currentai.language_representation.measurements_src]:::dep --> currentai__language_representation__measurements[currentai.language_representation.measurements]:::dep
+  currentai__proposals__proposals[currentai.proposals.proposals]:::dep --> build/proposals__py[build/proposals.py]:::audit
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/apply_scores__py[build/apply_scores.py]:::audit
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/check_parity__py[build/check_parity.py]:::audit
   currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep --> currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep
