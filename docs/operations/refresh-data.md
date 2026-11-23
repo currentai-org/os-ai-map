@@ -13,6 +13,6 @@ under the fetcher route in `skills/add-data-source/SKILL.md`:
 
 1. Load the CSV into the `currentai` warehouse as a static model (MCP):
    `createStaticModelUploadUrl`, upload, then `createStaticModelRunRequest`. For a brand-new
-   source, `createStaticModel` first; then `createDataModelRelease`.
+   source, `createStaticModel` first. A static model takes no release.
 2. Re-run dependent UDMs (see `deploy-models.md`).
 3. Re-serialize + re-render + re-publish (see `publish-map.md`).

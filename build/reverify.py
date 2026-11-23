@@ -11,7 +11,9 @@ license API / repo endpoint or a Hugging Face model-info source, the fresh SPDX 
 normalizes to the same license already recorded.
 Whichever path confirms it, the source takes the new `accessed`, `http_status` and
 `content_sha256`, and once every dimension an axis records has confirmed, that axis's
-`last_verified` is stamped to today. Any drift, any transient result, or any dimension
+`last_verified` is stamped to today. The report keeps three outcomes apart per source: the
+body was unchanged (a), the body changed and the claim was verified in it (b, c), and
+unresolved. `--summarize REPORT` prints them as the freshness pull request's description. Any drift, any transient result, or any dimension
 with no digested establishing source leaves the axis untouched and goes in the report for
 the agent leg.
 
@@ -165,6 +167,10 @@ class ProductResult:
     # dimensions, and keying by URL collapsed them into a single record that `apply` then
     # wrote to whichever came first (#527).
     reconfirmed: dict[str, dict[int, Confirmation]] = field(default_factory=dict)
+    # A source whose body returned the recorded digest, as (axis, url). Kept apart from the two
+    # lists below, whose bodies changed and whose claim was confirmed in the fresh body: both
+    # re-date a source, and only one of them says the page is unchanged.
+    unchanged: list[tuple[str, str]] = field(default_factory=list)
     reconfirmed_by_shows: list[tuple[str, str]] = field(default_factory=list)
     reconfirmed_by_spdx: list[tuple[str, str]] = field(default_factory=list)
     drifted: list[tuple[str, str]] = field(default_factory=list)
@@ -471,6 +477,7 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
                     continue
                 if got["content_sha256"] == src["content_sha256"]:
                     confirmed[position] = Confirmation(url, got)
+                    result.unchanged.append((axis, url))
                     continue
                 verdict, found = (
                     _spdx_verdict(url, got, recorded_license)
@@ -567,6 +574,67 @@ def axes_refusal(axes: tuple[str, ...]) -> str | None:
     return None
 
 
+def outcome_counts(product: dict) -> dict[str, int]:
+    """One product's sources by what the re-read found, from its entry in the report.
+
+    `unchanged` and `verified` are the two ways a source confirms; `unresolved` is every source
+    that did not (drift, a refuted license, a transient fetch). `redated_unchanged` and
+    `redated_verified` count the confirmed sources on an axis that was stamped, which are the
+    ones the run rewrote. A source that confirmed on an axis another source held back was read
+    and not re-dated.
+    """
+    stamped = set(product["stamped"])
+    unchanged = [axis for axis, _url in product.get("unchanged", [])]
+    verified = [axis for axis, _url in product.get("reconfirmed_by_shows", []) + product.get("reconfirmed_by_spdx", [])]
+    return {
+        "unchanged": len(unchanged),
+        "verified": len(verified),
+        "unresolved": len(product["drifted"]) + len(product.get("refuted", [])) + len(product["transient"]),
+        "redated_unchanged": sum(axis in stamped for axis in unchanged),
+        "redated_verified": sum(axis in stamped for axis in verified),
+    }
+
+
+def summary_markdown(report: dict) -> str:
+    """The body of the freshness pull request: the three outcomes, counted, then every product."""
+    per_product = [(p, outcome_counts(p)) for p in report["products"]]
+    total = {key: sum(counts[key] for _p, counts in per_product) for key in
+             ("unchanged", "verified", "unresolved", "redated_unchanged", "redated_verified")}
+    stamped = sum(1 for p, _counts in per_product if p["stamped"])
+    refuted = sum(len(p.get("refuted", [])) for p, _counts in per_product)
+    lines = [
+        f"Deterministic re-verification of the {len(per_product)} oldest products. An openness date was "
+        "stamped only where every recorded dimension's establishing source was fetched again and still "
+        "supports the recorded claim.",
+        "",
+        f"{stamped} product(s) re-dated, on {total['redated_unchanged'] + total['redated_verified']} source(s):",
+        "",
+        f"- **{total['redated_unchanged']} unchanged.** The body returned the recorded digest.",
+        f"- **{total['redated_verified']} changed, claim verified.** The body differs. The cited extract, or the "
+        "license id on a license endpoint, was confirmed in the fresh body, and the new digest was recorded.",
+        "",
+        f"**{total['unresolved']} source(s) unresolved**, and their axes are untouched: the body differs and "
+        "the claim could not be confirmed in it, or the source could not be fetched. "
+        + (f"{refuted} of them now read a different license than the record, named in the run log. " if refuted else "")
+        + "These need the agent leg (refresh-category, scoped to these products).",
+        "",
+        f"A further {total['unchanged'] - total['redated_unchanged']} unchanged and "
+        f"{total['verified'] - total['redated_verified']} verified source(s) sit on axes that another source "
+        "held back, so they were read and not re-dated.",
+        "",
+        "```",
+    ]
+    for product, counts in per_product:
+        lines.append(
+            f"{product['slug']:32} stamped={product['stamped']} unchanged={counts['unchanged']} "
+            f"verified={counts['verified']} drifted={len(product['drifted'])} "
+            f"refuted={len(product.get('refuted', []))} transient={len(product['transient'])} "
+            f"skipped={len(product['skipped'])}"
+        )
+    lines.append("```")
+    return "\n".join(lines) + "\n"
+
+
 def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     root = root or ROOT
     p = argparse.ArgumentParser(description=__doc__)
@@ -578,7 +646,12 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     p.add_argument("--pace", type=float, default=1.0, help="seconds to sleep between fetches")
     p.add_argument("--body-dir", type=Path, default=None,
                     help="where to save fetched bodies for shows/spdx matching (default: a temp dir)")
+    p.add_argument("--summarize", type=Path, default=None, metavar="REPORT",
+                   help="print the pull-request summary of a saved --report and exit; fetches nothing")
     args = p.parse_args(argv)
+    if args.summarize:
+        print(summary_markdown(json.loads(args.summarize.read_text())), end="")
+        return 0
     today = parse_date(args.today) if args.today else date.today()
     axes = tuple(a.strip() for a in args.axes.split(",") if a.strip())
     refusal = axes_refusal(axes)
@@ -596,11 +669,13 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
             "slug": slug, "stamped": result.stamped, "drifted": result.drifted,
             "refuted": result.refuted,
             "transient": result.transient, "skipped": result.skipped,
+            "unchanged": result.unchanged,
             "reconfirmed_by_shows": result.reconfirmed_by_shows,
             "reconfirmed_by_spdx": result.reconfirmed_by_spdx,
         })
-        print(f"{slug}: stamped={result.stamped} drifted={len(result.drifted)} "
-              f"refuted={len(result.refuted)} "
+        print(f"{slug}: stamped={result.stamped} unchanged={len(result.unchanged)} "
+              f"verified={len(result.reconfirmed_by_shows) + len(result.reconfirmed_by_spdx)} "
+              f"drifted={len(result.drifted)} refuted={len(result.refuted)} "
               f"transient={len(result.transient)} skipped={len(result.skipped)}")
         # Printed per product AND counted at the end: a refutation names two licenses and is
         # the one outcome here a person has to act on, so it does not belong only in a JSON
