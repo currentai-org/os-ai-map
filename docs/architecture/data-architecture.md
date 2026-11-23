@@ -45,7 +45,7 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 - Capability is recorded and mirrored but not recomputed.
 - `currentai.catalog` and the other peripheral OSO pipelines are out of scope (ADR-003): they model the OSO organization, not the Gap Map's data system, so they were externalized — frozen under platform ownership and removed from this repo's inventory and publisher.
 - External measurements generally expose current state rather than a durable observation history.
-- OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
+- OSO supports incremental models, but no observation-history model is in production: ruling R-2026-11-21-g keeps them in a scratch dataset until their review ([`operations/history-models-review.md`](../operations/history-models-review.md)) is accepted. Until then the current normalized state stays a preserved timestamped snapshot rather than being mislabeled as an append-only history.
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`**, each carrying a `mirror:` block, with no exception — `mirror_ownership_violations` compares the file's `PLATFORM MIRROR (read-only)` banner against both manifests and fails either way round. The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired; `last_observed_trigger` in `assets.yaml` records what actually did, and `build/assets.py` derives which schedules remain unobserved.
 - Some tracked assets have no reviewed in-repo consumer. The set is derived, not listed here: `build/assets.py::no_reviewed_consumers()`.
@@ -101,12 +101,12 @@ Measurements do not belong in either namespace. They belong in source-specific s
 
 Append-only observation history is the target contract. A new collection run should append a new observation rather than overwrite the prior one.
 
-**Current platform constraint:** as of 2026-08-20, OSO does not support incremental models. Do not pretend that a full-refresh model is append-only, and do not build a brittle simulation from an ever-growing list of hardcoded snapshots. The initial implementation must:
+**Current state:** OSO supports incremental models (by unique key and by time range), and history models run in a scratch dataset. Until ruling R-2026-11-21-g's review approves one as a production dataset, do not pretend that a full-refresh model is append-only, and do not build a brittle simulation from an ever-growing list of hardcoded snapshots. The interim implementation must:
 
 1. publish a normalized full-refresh current-state model;
 2. preserve the current data as the first immutable, UTC-timestamped baseline snapshot;
 3. carry stable observation IDs and the time fields required by the eventual history table;
-4. open a blocked issue for migration to an incremental model when OSO ships the feature.
+4. move to an incremental history model once the review approves one for production.
 
 The baseline snapshot is the seed for the future incremental table. Later full-refresh executions must not overwrite or relabel that baseline.
 
@@ -415,14 +415,14 @@ Purpose: normalized measurements linked to accepted product identity, with appen
 
 Source-specific ingestion remains in datasets such as `signal_github`, `signal_huggingface`, and `signal_packages`. `observations` standardizes them without erasing their source semantics.
 
-#### Transitional implementation while OSO lacks incremental models
+#### Transitional implementation until a history model is approved
 
 Use three distinct objects so current state is never mislabeled as history:
 
 - `observations.source_runs` — the run contract described below. Required from day one; a read-only control-plane snapshot (Option B);
 - `observations.product_adoption_current` — a full-refresh normalized model holding the current source state (the latest normalized values). It cannot filter or attribute those values by run, since the warehouse carries no row-to-run binding, so it makes no completeness claim; see the source_runs rules below;
 - `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query. **Captured 2026-08-24T22:27:44Z** from the deployed `product_adoption_current` state, in Phase 2 and not deferred to Phase 2B: 654 rows over 392 products, file digest `84e0d574…a569`, content digest `3a942c39…9a9b`. §18 requires one preserved baseline snapshot for the whole temporary full-refresh period, and precisely because `product_adoption_current` is full-refresh (every run overwrites), those bytes would not have survived the next run had they not been frozen deliberately; waiting for 2B would have meant the first snapshot never existed. It anchors the future append-only history but did not wait for it. The capture records honestly that `source_run_id` is NULL for every one of the 654 rows and that no authoritative row-to-run binding exists in the warehouse; no run id is inferred from timestamps or from `source_runs`. It is immutable from here — later full-refresh executions must not overwrite or relabel it;
-- `observations.product_adoption` — the target incremental history table, created only after OSO incremental models are available.
+- `observations.product_adoption` — the target incremental history table, created once a history model is approved for production (R-2026-11-21-g).
 
 #### The baseline is bytes, not a query
 
@@ -1186,7 +1186,7 @@ external API/source
 
 Signal refresh does not write accepted scores. It may open a review PR containing explicit proposed changes after all packet-binding and evidence requirements pass.
 
-Until OSO incremental models are available, the historical append step is skipped after the immutable baseline is captured. The full-refresh current-state model and reconciliation still run.
+Until a history model is approved for production, the historical append step is skipped after the immutable baseline is captured. The full-refresh current-state model and reconciliation still run.
 
 ### 5.3 Evidence and freshness DAG
 
@@ -1407,7 +1407,7 @@ warehouse/
     observations/
       source_runs                        run contract; a Python control-plane snapshot now
                                          (build/snapshot_source_runs.py); no live emitter is planned
-      product_adoption.sql               incremental history — Phase 2B, blocked on OSO
+      product_adoption.sql               incremental history — Phase 2B, pending review (R-2026-11-21-g)
       product_adoption_current.sql       full-refresh now, a view over history later
     evaluation/
       product_adoption_measurements.sql  artifact observations -> product-level bands
@@ -2040,7 +2040,7 @@ During migration:
 - Repository declaration changes trigger full registry compilation and full score evaluation.
 - Signal collection is source-specific and may refresh independently.
 - A successful signal refresh triggers current-state observation normalization and reconciliation.
-- Historical append begins only when OSO incremental models are available; until then the preserved baseline is immutable and the current model is full-refresh.
+- Historical append begins only when a history model is approved for production; until then the preserved baseline is immutable and the current model is full-refresh.
 - A failed or stale signal source does not silently reuse itself as current.
 - Publication waits for the relevant upstream release or observation run IDs.
 
@@ -2098,4 +2098,4 @@ The architecture migration is complete when:
 - the full repository suite and all architecture gates pass without skips;
 - documentation accurately describes the deployed system.
 
-If OSO incremental models are still unavailable, all unblocked phases may ship, but the architecture migration remains explicitly **partially complete** on observation history. The accepted temporary state is: one preserved baseline snapshot, a full-refresh `product_adoption_current` model, working reconciliation, and the blocked Phase 2B issue above. Do not mark append-only history complete until an incremental platform run has been observed.
+While no history model is approved for production, all unblocked phases may ship, but the architecture migration remains explicitly **partially complete** on observation history. The accepted temporary state is: one preserved baseline snapshot, a full-refresh `product_adoption_current` model, working reconciliation, and the Phase 2B issue above. Do not mark append-only history complete until a scheduled incremental run has been observed in production.

@@ -195,6 +195,11 @@ TABLES: dict[str, tuple[str, ...]] = {
         "source_url",
         "source_shows",
         "source_accessed",
+        # The source's recorded fetch result, so a platform model can compare a fresh fetch
+        # against what the repo last saw without reading sources/. Blank where the record has
+        # none (a source not yet digested, or a non-document grade).
+        "source_http_status",
+        "source_content_sha256",
         "grade",
         "admitted",
         "reject_reason",
@@ -796,6 +801,7 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                     admitted, reason = admit(shows, policy)
                     rejected += 0 if admitted else 1
                     accessed = source.get("accessed")
+                    status = source.get("http_status")
                     tables["product_score_sources"].append(
                         {
                             "product_slug": product_slug,
@@ -804,6 +810,8 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                             "source_url": source.get("url", ""),
                             "source_shows": shows,
                             "source_accessed": str(accessed) if accessed else "",
+                            "source_http_status": str(status) if status is not None else "",
+                            "source_content_sha256": source.get("content_sha256") or "",
                             "grade": "document",
                             "admitted": admitted,
                             "reject_reason": reason,

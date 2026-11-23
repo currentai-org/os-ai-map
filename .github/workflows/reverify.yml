@@ -45,6 +45,9 @@ jobs:
       - name: Open the freshness PR
         env:
           GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        # The ADR-004 review sheet goes into the PR body, as the proposals bridge does. It is
+        # generated after the commit, because check_corpus_diff reads the touched products from
+        # the committed diff, and a sheet that fails stops the run before anything is pushed.
         run: |
           if [ -z "$(git status --porcelain sources/scores/)" ]; then
             echo "Nothing re-dated; no PR."
@@ -56,6 +59,11 @@ jobs:
           git checkout -b "$BRANCH"
           git add sources/scores/
           git commit -m "chore(freshness): re-verify $(git diff --cached --name-only | wc -l | tr -d ' ') products, openness re-dated where the cited evidence was confirmed"
+          uv run python -m build.check_corpus_diff --base origin/main --sheet review-sheet.md
+          {
+            uv run python -m build.reverify --summarize reverify-report.json
+            echo
+            cat review-sheet.md
+          } > pr-body.md
           git push -u origin "$BRANCH"
-          uv run python -m build.reverify --summarize reverify-report.json > pr-body.md
           gh pr create --title "chore(freshness): rolling re-verification $(date -u +%F)" --body-file pr-body.md --label freshness
