@@ -1094,3 +1094,66 @@ held:
         cannot be settled from this fetch. Every recorded component needs an establishing source, and a
         closed or required claim is dated only on a first-party statement. Hold, and do not move the score.
       since: '2026-09-29'
+  nvidia-jetson-orin-nano-super-developer-kit:
+    openness:
+      because: Datasheets (public CDN PDF link on the kit page), retail (authorized distributors worldwide),
+        toolchain closed and blobs required (Jetson Linux 39.2.1 in JetPack 7.2.1 under the NVIDIA Software
+        License Agreement) are supported. Schematics partial is not established. The family page mentions
+        'Product Design Guide' only in a UPHY footnote with no link. No design guide, carrier design file
+        or schematic string or href appears in either NVIDIA page body, so 'carrier design guide public'
+        is asserted, not shown. The recorded note's negative ('NVIDIA does not release the kit's own board
+        files') has no first-party statement behind it, and the packet's own 'no kit-specific schematics
+        offered' is absence. Form_factor board rests on the family page's 'includes a reference carrier
+        board', not on the kit page, which has no carrier or board text. Hold until a linked, public Product
+        Design Guide or carrier-board file page is fetched, or a first-party statement is found. Score 3
+        is not contradicted.
+      since: '2026-09-29'
+  nvidia-jetson-orin-nx:
+    capability:
+      because: 'The recorded value (157 SPARSE INT8 TOPS, 16GB 128-bit LPDDR5, 1792-core Ampere GPU) and
+        the peer comparison (AGX Orin 275 TOPS/64GB, Orin Nano 67 TOPS/8GB) cannot be re-derived: the current
+        family page body has no LPDDR5, 16GB, Ampere, SPARSE or 1792 text. Only the TOPS figure is confirmed,
+        on the modules page.'
+      since: '2026-09-29'
+    openness:
+      because: 'The recorded family page no longer carries the text that established schematics/datasheets/retail/form_factor:
+        the current body has no ''See Module Data Sheets'', no ''260-pin'', no ''SO-DIMM'', no distributor
+        text; only ''See the Product Design Guide for supported UPHY configurations'' remains. The Jetson
+        Linux page no longer states the NVIDIA Software License Agreement (searched: ''Software License'',
+        ''SLA'', ''icense'': none), so a closed toolchain cannot be dated from it. The NVIDIA module datasheet
+        PDF URL tried returned 404. Components schematics, datasheets, retail, form_factor, and the closed-toolchain
+        license claim have no establishing source in this run.'
+      since: '2026-09-29'
+  nvidia-run-ai:
+    openness:
+      because: >-
+        Re-read 2026-11-25: nvidia.com/en-us/software/run-ai/ has been rewritten since the recorded
+        read. The old page cleanly separated a closed "enterprise platform" from "the open-source
+        KAI Scheduler it's based on"; the new page instead introduces "NVIDIA Run:ai" itself as "the
+        open source AI workload and GPU orchestration platform for Kubernetes" composed of "major
+        open source projects" (naming KAI Scheduler and a new "KAI GPU Fractioning Operator"), with a
+        separately sold "Standalone" tier ("Deploy the complete NVIDIA Run:ai platform... Download
+        Now" leading only to a sales-contact form). The bottom-line fact that no source is published
+        for the bundled/complete platform still holds, so `license` is not contradicted, but whether
+        `source` is still correctly recorded as a single closed product versus an open-core
+        rebranding (open-source components plus a gated "complete platform" layer, under the
+        core-gated test rather than a flat closed/proprietary one) is a product-boundary call this
+        pass should not make. Settling it needs a maintainer read of the current page against
+        identity.md's multi-SKU guidance and the core-gated test in openness.md.
+      since: '2026-11-25'
+  nxp-imx-8m-plus:
+    adoption:
+      because: The recorded band (level 4, broad, reported_traction) rests on one partner's availability
+        commitment, which is not a countable figure. The Toradex page still lists it (2036+, Configure Your
+        Own). No units shipped, distributor count, downloads or stars were obtained to re-establish the
+        band, and NXP's own pages 404.
+      since: '2026-09-29'
+    openness:
+      because: The IMX8MPCEC datasheet is a compressed PDF (3.19 MB, HTTP 200, sha 6cfe2005...). Its recorded
+        quoted text cannot be found in the fetched body, so _shows_confirms returned False. That leaves
+        datasheets, form_factor and schematics without a validating source. The nxp.com pages and fact sheet
+        return 404, and Mouser returned only a 13.9 KB HTML shell, so no substitute exists. The recorded
+        schematics none is a negative claim, and neither the meta-imx README nor the Toradex page makes
+        a first-party statement about it. The toolchain, blobs and retail components are re-established
+        but do not cover the whole record.
+      since: '2026-09-29'
